@@ -327,3 +327,59 @@ footer span:first-child { color: var(--text); font-family: var(--font-display); 
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Shared operational surfaces for S07–S10. Feature components stay semantic and
+   inherit this single evidence-desk vocabulary instead of growing card systems. */
+.sample-workspace { display: grid; gap: 0; background: var(--frame); border: 3px solid var(--frame); border-top: 0; }
+.workspace-frame { padding: clamp(24px, 4vw, 48px); background: var(--surface); border: 3px solid var(--frame); }
+.sample-workspace > .workspace-frame { border: 0; border-bottom: 3px solid var(--frame); }
+.sample-workspace > .workspace-frame:last-child { border-bottom: 0; }
+.feature-stack { display: grid; gap: 24px; min-width: 0; }
+.feature-stack > header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 32px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.feature-stack > header > p:first-child { display: none; }
+.feature-stack h2, .feature-stack h3, .feature-stack h4 { margin: 0; }
+.feature-stack h2 { font: 700 clamp(32px, 4vw, 48px)/1.05 var(--font-display); }
+.feature-stack h3 { font-size: 22px; }
+.feature-stack p { margin: 0; color: var(--text-secondary); }
+.feature-stack label { display: grid; gap: 8px; font-size: 14px; font-weight: 600; }
+.feature-stack input, .feature-stack select { width: 100%; min-height: 46px; padding: 10px 12px; color: var(--text); background: var(--surface-raised); border: 1px solid var(--border-control); border-radius: 8px; font: 400 16px/1.4 var(--font-body); }
+.feature-stack button, .button-label { min-height: 44px; width: fit-content; padding: 0 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--accent); background: var(--surface-raised); border: 1px solid var(--border-control); border-radius: 8px; font: 600 14px/1.2 var(--font-body); cursor: pointer; }
+.feature-stack button:hover, .button-label:hover { background: var(--accent-dim); }
+.feature-stack button[type="submit"], .feature-stack .primary-action-global { color: var(--on-action); background: var(--action); border-color: var(--on-action); }
+.feature-stack button[type="submit"]:hover, .feature-stack .primary-action-global:hover { background: var(--action-hover); }
+.feature-stack button:disabled { cursor: not-allowed; opacity: .6; }
+.feature-stack aside { padding: 20px 24px; display: grid; gap: 8px; background: var(--warning-dim); border: 1px solid var(--warning); }
+.feature-stack aside strong { color: var(--warning); }
+.feature-stack ul, .feature-stack ol { margin: 0; }
+.mono { font-family: var(--font-mono) !important; }
+.checklist { padding: 0; list-style: none; border-block: 1px solid var(--border); }
+.checklist li { min-height: 52px; display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 12px; align-items: center; border-bottom: 1px solid var(--border); }
+.checklist li:last-child { border: 0; }
+.checklist small { color: var(--text-muted); }
+.attachment-card { min-height: 64px; padding-block: 14px; display: grid; grid-template-columns: minmax(180px, 1fr) repeat(2, minmax(100px, auto)) auto; gap: 16px; align-items: center; border-bottom: 1px solid var(--border); }
+.attachment-card > span { color: var(--text-muted); font-size: 13px; }
+.attachment-card button { background: transparent; border-color: var(--border-control); color: var(--accent); }
+.feature-stack fieldset { padding: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; border: 1px solid var(--border); }
+.feature-stack fieldset legend { padding-inline: 8px; font-weight: 600; }
+.feature-stack fieldset p, .feature-stack fieldset button { grid-column: 1 / -1; }
+.feature-stack [role="dialog"] { position: fixed; z-index: 60; inset: 50% auto auto 50%; width: min(520px, calc(100% - 32px)); padding: 28px; transform: translate(-50%, -50%); background: var(--surface-raised); border: 3px solid var(--frame); }
+.tracker-controls { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 12px; align-items: end; }
+.tracker-region { max-height: 520px; overflow: auto; border: 1px solid var(--border); scrollbar-color: var(--accent) var(--surface); }
+.tracker-hint { display: none; }
+.tracker-region table { width: 100%; min-width: 1050px; border-collapse: collapse; font-size: 13px; }
+.tracker-region th, .tracker-region td { padding: 14px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
+.tracker-region th { position: sticky; top: 0; z-index: 1; background: var(--frame); color: var(--on-header); }
+.tracker-region td button { min-height: 32px; padding-inline: 8px; background: transparent; color: var(--accent); border-color: transparent; text-decoration: underline; text-underline-offset: 3px; }
+.feature-stack dl { display: grid; grid-template-columns: minmax(140px, .4fr) 1fr; margin: 0; border-top: 1px solid var(--border); }
+.feature-stack dt, .feature-stack dd { margin: 0; padding: 12px; border-bottom: 1px solid var(--border); }
+.feature-stack dt { color: var(--text-muted); font-size: 13px; font-weight: 600; }
+
+@media (max-width: 767px) {
+  .workspace-frame { padding: 24px 20px; }
+  .tracker-controls { grid-template-columns: 1fr; }
+  .tracker-hint { display: block; font-size: 13px; }
+  .attachment-card { grid-template-columns: 1fr; }
+  .feature-stack fieldset { grid-template-columns: 1fr; }
+  .checklist li { grid-template-columns: 24px 1fr; padding-block: 10px; }
+  .checklist small { grid-column: 2; }
+}

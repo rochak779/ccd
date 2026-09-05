@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-05T16:27:36Z",
+  "generatedAt": "2026-09-05T18:00:00Z",
   "title": "Design System: CC’d",
   "extensions": {
     "colorMeta": {
@@ -154,6 +154,7 @@
       "micro": { "displayName": "Micro", "purpose": "Prepared-preview and provenance details." },
       "footer-mark": { "displayName": "Footer Mark", "purpose": "Compact CC’d identity at the close of the page." },
       "display-narrow": { "displayName": "Display Narrow", "purpose": "Responsive display scale for the page thesis on narrow screens." }
+      ,"locator": { "displayName": "Evidence Locator", "purpose": "Deal aliases, spreadsheet ranges, hashes and other exact inspectable values." }
     },
     "shadows": [
       { "name": "status-halo", "value": "0 0 0 4px rgb(157 217 182 / 14%)", "purpose": "Keeps the tiny assembled-state dot legible on the dark header." }
@@ -224,22 +225,48 @@
       "description": "Yellow human-decision action shown with a clear unavailable treatment in S01.",
       "html": "<button class=\"ds-prepared-action\" type=\"button\" disabled>Approve as partial</button>",
       "css": ".ds-prepared-action { min-height: 46px; width: fit-content; padding: 0 18px; display: inline-flex; align-items: center; background: var(--action, #f4ce58); color: var(--on-action, #211a2a); border: 1px dashed var(--on-action, #211a2a); border-radius: 8px; font-family: \"IBM Plex Sans\", \"Helvetica Neue\", Arial, sans-serif; font-size: 14px; font-weight: 700; opacity: 1; cursor: not-allowed; } .ds-prepared-action:focus-visible { outline: 3px solid var(--focus, #5c367a); outline-offset: 3px; }"
+    },
+    {
+      "name": "Operational Input",
+      "kind": "input",
+      "refersTo": "input-operational",
+      "description": "Labelled field for searchable, editable or exact workspace values.",
+      "html": "<label class=\"ds-field\">Secure deal address<input class=\"ds-input ds-mono\" value=\"northstar@inbound.ccd.test\" readonly></label>",
+      "css": ".ds-field { display: grid; gap: 8px; color: var(--text, #211a2a); font: 600 14px/1.3 \"IBM Plex Sans\", sans-serif; } .ds-input { min-height: 46px; width: 100%; padding: 10px 12px; color: var(--text, #211a2a); background: var(--surface-raised, #fff); border: 1px solid var(--border-control, #887c95); border-radius: 8px; font: 400 16px/1.4 \"IBM Plex Sans\", sans-serif; } .ds-mono { font-family: SFMono-Regular, Consolas, monospace; } .ds-input:focus-visible { outline: 3px solid var(--focus, #5c367a); outline-offset: 3px; }"
+    },
+    {
+      "name": "Warning Panel",
+      "kind": "custom",
+      "refersTo": "warning-panel",
+      "description": "Explicit limited-coverage or inactive-monitoring notice with a recovery action.",
+      "html": "<aside class=\"ds-warning\"><strong>Ongoing monitoring is not active</strong><p>Run the prepared routing test to activate this demo deal.</p><button>Send test message</button></aside>",
+      "css": ".ds-warning { padding: 20px 24px; display: grid; gap: 8px; color: var(--text, #211a2a); background: var(--warning-dim, #fff1c8); border: 1px solid var(--warning, #855b09); font-family: \"IBM Plex Sans\", sans-serif; } .ds-warning strong { color: var(--warning, #855b09); } .ds-warning p { margin: 0; } .ds-warning button { min-height: 44px; width: fit-content; padding: 0 18px; color: var(--on-action, #211a2a); background: var(--action, #f4ce58); border: 1px solid var(--on-action, #211a2a); border-radius: 8px; font-weight: 600; } .ds-warning button:hover { background: #e8ba38; } .ds-warning button:focus-visible { outline: 3px solid var(--focus, #5c367a); outline-offset: 3px; }"
+    },
+    {
+      "name": "Tracker Table",
+      "kind": "custom",
+      "description": "Dense comparison table inside its own labelled, scrollable evidence region.",
+      "html": "<div class=\"ds-table-region\" tabindex=\"0\" role=\"region\" aria-label=\"Request tracker\"><table><thead><tr><th>ID</th><th>Request</th><th>Approved status</th></tr></thead><tbody><tr><td><a href=\"#\">C-14</a></td><td>Customer concentration information</td><td>Awaiting response</td></tr></tbody></table></div>",
+      "css": ".ds-table-region { max-width: 100%; overflow: auto; border: 1px solid var(--border, #dcd4e5); scrollbar-color: var(--accent, #5c367a) var(--surface, #fcfaff); } .ds-table-region table { width: 100%; min-width: 620px; border-collapse: collapse; color: var(--text, #211a2a); font: 400 13px/1.5 \"IBM Plex Sans\", sans-serif; } .ds-table-region th, .ds-table-region td { padding: 14px 12px; border-bottom: 1px solid var(--border, #dcd4e5); text-align: left; vertical-align: top; } .ds-table-region th { background: var(--frame, #211a2a); color: var(--on-header, #fcfaff); } .ds-table-region a { color: var(--accent, #5c367a); font-weight: 600; text-underline-offset: 3px; } .ds-table-region:focus-visible { outline: 3px solid var(--focus, #5c367a); outline-offset: 3px; }"
     }
   ],
   "narrative": {
     "northStar": "The Framed Evidence Desk",
-    "overview": "The Framed Evidence Desk treats diligence review as one joined working record. A broad lavender context field introduces the request, then locks directly into request, coverage and proposed-state compartments held by a decisive dark frame. The composition is bold enough to be recognisably CC’d while the evidence rows remain calm, neutral and easy to inspect.\n\nThe system uses expressive condensed type for orientation and restrained sans-serif type for the record itself. Yellow marks the reviewer’s prepared action, lavender provides context and selection, and semantic washes identify supported or missing evidence without implying that a proposal has already become an approved decision.",
+    "overview": "The Framed Evidence Desk treats diligence review as one joined working record. A broad lavender context field introduces the deal, then locks directly into stacked operational sections held by a decisive dark frame. Within it, overview, request tracking, baseline evidence and channel setup remain calm, neutral and easy to inspect.\n\nThe system uses expressive condensed type for orientation and restrained sans-serif type for the record itself. Yellow marks the reviewer’s prepared action, lavender provides context and selection, and semantic washes identify supported or missing evidence without implying that a proposal has already become an approved decision.",
     "keyCharacteristics": [
       "One continuous evidence frame, with strong outside edges and fine internal rules.",
       "Cool violet paper, broad lavender context and sparse yellow action.",
       "Compressed display hierarchy paired with quiet operational copy.",
       "Explicit status words, human-control language and inspectable evidence counts.",
-      "Desktop-first density that becomes a single reading sequence on mobile."
+      "Desktop-first density that becomes a single reading sequence on mobile.",
+      "Persistent deal context, theme controls and section navigation around the working record.",
+      "Tables, fields and provenance rows that favour comparison over card-based presentation."
     ],
     "rules": [
       { "name": "The Context Is Not Correctness Rule", "body": "Lavender establishes context or selection; it never certifies that evidence is sufficient.", "section": "colors" },
       { "name": "The One Human Action Rule", "body": "Use yellow once per decision context, for the reviewer’s prepared next action.", "section": "colors" },
       { "name": "The Status Has Words Rule", "body": "Semantic colour always travels with a precise label such as “Supported” or “Missing”.", "section": "colors" },
+      { "name": "The Theme Preserves Meaning Rule", "body": "Dark theme remaps surface, text, border and semantic tones while retaining the same role hierarchy; it does not invert action or status meaning.", "section": "colors" },
       { "name": "The Condensed Frame, Neutral Record Rule", "body": "Use Barlow Condensed for identity and major orientation; keep evidence, statuses and controls in IBM Plex Sans.", "section": "typography" },
       { "name": "The Flat Working Record Rule", "body": "Static evidence surfaces never lift; use frame, fill and fine rules to establish depth.", "section": "elevation" },
       { "name": "The Frame Outside, Fine Rules Within Rule", "body": "Spend heavy line weight on the composition boundary and seams; keep evidence rows quiet and individually readable.", "section": "shapes" }
@@ -250,7 +277,10 @@
       "Do pair every semantic colour with exact status language.",
       "Do keep the human-control statement beside the proposed decision.",
       "Do preserve the request → coverage → proposal reading order when the layout reflows.",
-      "Do remove smooth scrolling, transforms and transitions when reduced motion is requested."
+      "Do remove smooth scrolling, transforms and transitions when reduced motion is requested.",
+      "Do keep tracker scrolling inside its labelled region and expose horizontal-scroll guidance on narrow screens.",
+      "Do keep source, locator, original extraction and lifecycle state beside editable evidence.",
+      "Do preserve all semantic roles and visible focus in both light and dark themes."
     ],
     "donts": [
       "Don't split the evidence sequence into a scattered dashboard of interchangeable cards.",
@@ -258,7 +288,9 @@
       "Don't add shadows to static panes or make evidence rows lift on hover.",
       "Don't use condensed display type for source prose, filenames or evidence values.",
       "Don't turn every status or control into a pill.",
-      "Don't introduce gradients, decorative finance imagery or autonomous-AI theatre."
+      "Don't introduce gradients, decorative finance imagery or autonomous-AI theatre.",
+      "Don't hide unknown owners, missing dates, limited coverage or inactive monitoring; label them explicitly.",
+      "Don't let dialogs, sticky table headers or navigation obscure evidence or keyboard focus."
     ]
   }
 }

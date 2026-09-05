@@ -18,6 +18,9 @@ colors:
   success-soft: "#e5f3ea"
   warning: "#855b09"
   warning-soft: "#fff1c8"
+  danger: "#a63b4e"
+  danger-soft: "#fbeaee"
+  action-hover: "#e8ba38"
   header-border: "#4a4055"
   header-status-text: "#d9cfdf"
   header-status-dot: "#9dd9b6"
@@ -86,6 +89,12 @@ typography:
     fontWeight: 700
     lineHeight: 0.94
     letterSpacing: "-0.03em"
+  locator:
+    fontFamily: '"SFMono-Regular", Consolas, monospace'
+    fontSize: "13px"
+    fontWeight: 400
+    lineHeight: 1.45
+    letterSpacing: "normal"
 rounded:
   badge: "6px"
   control: "8px"
@@ -142,6 +151,28 @@ components:
     rounded: "{rounded.control}"
     padding: "0 18px"
     height: "46px"
+  button-primary:
+    backgroundColor: "{colors.action}"
+    textColor: "{colors.ink}"
+    typography: "{typography.label}"
+    rounded: "{rounded.control}"
+    padding: "0 18px"
+    height: "44px"
+  input-operational:
+    backgroundColor: "{colors.surface-raised}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.control}"
+    padding: "10px 12px"
+    height: "46px"
+  warning-panel:
+    backgroundColor: "{colors.warning-soft}"
+    textColor: "{colors.warning}"
+    padding: "20px 24px"
+  workspace-section:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    padding: "clamp(24px, 4vw, 48px)"
 ---
 
 # Design System: CC’d
@@ -150,7 +181,7 @@ components:
 
 **Creative North Star: "The Framed Evidence Desk"**
 
-The Framed Evidence Desk treats diligence review as one joined working record. A broad lavender context field introduces the request, then locks directly into request, coverage and proposed-state compartments held by a decisive dark frame. The composition is bold enough to be recognisably CC’d while the evidence rows remain calm, neutral and easy to inspect.
+The Framed Evidence Desk treats diligence review as one joined working record. A broad lavender context field introduces the deal, then locks directly into stacked operational sections held by a decisive dark frame. Within it, overview, request tracking, baseline evidence and channel setup remain calm, neutral and easy to inspect.
 
 The system uses expressive condensed type for orientation and restrained sans-serif type for the record itself. Yellow marks the reviewer’s prepared action, lavender provides context and selection, and semantic washes identify supported or missing evidence without implying that a proposal has already become an approved decision.
 
@@ -161,6 +192,8 @@ The system uses expressive condensed type for orientation and restrained sans-se
 - Compressed display hierarchy paired with quiet operational copy.
 - Explicit status words, human-control language and inspectable evidence counts.
 - Desktop-first density that becomes a single reading sequence on mobile.
+- Persistent deal context, theme controls and section navigation around the working record.
+- Tables, fields and provenance rows that favour comparison over card-based presentation.
 
 ## Colors
 
@@ -181,6 +214,7 @@ The palette feels cool, assured and operational: near-black violet ink gives the
 - **Context Lavender:** Fills the broad opening field and establishes deal or request context without asserting correctness.
 - **Supported Green / Soft Supported Green:** Identify evidence that is actually supplied while leaving the parent request’s state explicit.
 - **Missing Amber / Soft Missing Amber:** Identify absent evidence without borrowing the yellow action treatment.
+- **Correction Red / Soft Correction Red:** Reserved for validation failures, destructive implications and explicit errors; never used for ordinary missing evidence.
 
 ### Neutral
 
@@ -200,11 +234,13 @@ The palette feels cool, assured and operational: near-black violet ink gives the
 
 **The Status Has Words Rule.** Semantic colour always travels with a precise label such as “Supported” or “Missing”.
 
+**The Theme Preserves Meaning Rule.** Dark theme remaps surface, text, border and semantic tones while retaining the same role hierarchy; it does not invert action or status meaning.
+
 ## Typography
 
 **Display Font:** Barlow Condensed (with Arial Narrow and sans-serif fallbacks)  
 **Body Font:** IBM Plex Sans (with Helvetica Neue, Arial and sans-serif fallbacks)  
-**Label/Mono Font:** IBM Plex Sans for shipped labels; the broader brand reserves IBM Plex Mono for evidence locators when those appear.
+**Label/Mono Font:** IBM Plex Sans for labels; the shipped workspace uses the system monospace stack for deal aliases and evidence locators.
 
 **Character:** The pairing puts compressed confidence around a calm working record. Display type creates immediate orientation; the sans-serif carries every request, evidence statement, status and action without theatrical emphasis.
 
@@ -215,6 +251,7 @@ The palette feels cool, assured and operational: near-black violet ink gives the
 - **Body** (400, 16px, 1.5 line-height): Request text, evidence explanation and delivery copy, with a practical measure of about 64 characters in the opening field.
 - **Label** (600, 14px, 1.3 line-height): Calls to action, build state and compact evidence rows.
 - **Metadata** (600, 12–13px, about 1.4 line-height): Status chips and prepared-preview notes.
+- **Locator** (400, 13px, 1.45 line-height): Deal aliases, spreadsheet ranges, hashes and other values that must be copied or inspected exactly.
 
 ### Named Rules
 
@@ -222,9 +259,9 @@ The palette feels cool, assured and operational: near-black violet ink gives the
 
 ## Layout
 
-The shipped screen uses one centred container capped at 1280px with 32px wide-screen gutters. A 76px dark header precedes a lavender context band at least 330px tall. That band joins a three-column evidence frame in a 0.9 / 1.1 / 1 ratio; 3px ink gaps become structural seams between request, coverage and decision panes. Pane padding scales from 28px to 42px, while compact evidence rows remain at least 48px high.
+The workspace uses one centred container capped at 1280px with 32px wide-screen gutters. A 76px dark header carries account context, theme choice and a 48px scrollable section-navigation row. A 220px lavender deal band joins directly to one vertically stacked workspace frame. Overview, tracker, baseline and setup sections use responsive 24–48px padding and are separated by 3px structural seams.
 
-At 950px and below, request and coverage share two columns and the decision spans the full width. Below 768px, the container uses 16px gutters, the header contracts to 68px, and the full frame becomes one continuous request → coverage → proposal sequence. The opening band grows to at least 440px so the headline, supporting copy and prepared-example link remain comfortably separated.
+Wide data tables remain scrollable inside their own bordered region and use a sticky dark header; the page itself must never overflow horizontally. Below 768px, the container uses 16px gutters, header context stacks, navigation remains horizontally scrollable, control grids become one column, attachment metadata stacks, and claim fieldsets collapse from three columns to one. The reading sequence remains overview → requests → baseline → deal setup.
 
 Spacing follows an 8px-rooted rhythm, with 12px and 20px optical steps where compact text or icon relationships require them. Large gaps separate regions; individual evidence rows stay compact and are divided by rules instead of nested cards.
 
@@ -244,7 +281,7 @@ The working composition is flat. Depth comes from tonal layering, the dark outer
 
 The system moves from broad, expressive framing to compact operational detail. The joined composition uses gently rounded top corners (24px) and square internal seams. Controls use measured 8px corners, chips and evidence markers use 6px corners, and icon boxes use 12px corners. Only the tiny status dot is fully round.
 
-Outer composition lines are 3px and internal divisions are 1px. A dashed ink boundary distinguishes the unavailable prepared action from an enabled decision without draining its yellow emphasis.
+Outer composition lines are 3px and internal divisions are 1px. Operational controls use 8px corners, theme controls and choice surfaces may use 12px corners, and data tables, definition lists, attachment rows and checklists remain square within the frame. A dashed ink boundary distinguishes an unavailable prepared action from an enabled decision without draining its yellow emphasis.
 
 **The Frame Outside, Fine Rules Within Rule.** Spend heavy line weight on the composition boundary and seams; keep evidence rows quiet and individually readable.
 
@@ -256,6 +293,7 @@ Outer composition lines are 3px and internal divisions are 1px. A dashed ink bou
 - **Primary:** Human-action yellow with dark ink and bold sentence-case text. The shipped prepared action uses a dashed dark border because it is visibly unavailable.
 - **Hover / Focus:** Interactive controls use short 160ms changes and a 3px violet focus outline offset by 3px. The secondary prepared-example link lifts 2px on hover.
 - **Secondary:** Raised white with a 1px ink border; used to move from the claim into the prepared example.
+- **Operational primary:** Yellow with a solid ink border for consequential reviewer or activation actions. Generic secondary actions use raised surface, evidence-violet text and the stronger control rule.
 
 ### Chips
 
@@ -270,9 +308,28 @@ Outer composition lines are 3px and internal divisions are 1px. A dashed ink bou
 - **Border:** 3px outer frame and seams, 1px internal rules.
 - **Internal Padding:** Responsive 28–42px on desktop and 24–30px on mobile.
 
+### Inputs / Fields
+
+- **Style:** Raised surface, 1px control-violet border, 8px corners, 46px minimum height and 10px × 12px padding. Labels sit above fields in 14px semibold body type.
+- **Focus:** The global 3px evidence-violet outline remains visible with a 3px offset; the dark header uses pale violet for contrast.
+- **Read-only / Exact values:** Deal aliases and locators use monospace and retain text selection. Disabled actions stay labelled and visibly unavailable rather than disappearing.
+- **Error / Warning:** Errors use correction red with explicit copy. Limited coverage and inactive monitoring use an amber wash, amber border and a textual heading.
+
 ### Navigation
 
-The 76px dark header is a compact brand anchor rather than a menu. The white condensed wordmark sits opposite a text-labelled green build status. Focus inside the header switches to a pale violet outline for contrast; mobile preserves the same two-part arrangement in 68px.
+The 76px dark header is a compact brand anchor and workspace shell. The white condensed wordmark sits opposite deal/account context and a three-choice System / Light / Dark theme control. A second 48px row holds horizontally scrollable section links with a 3px violet active underline. Focus inside the header switches to a pale violet outline for contrast; mobile stacks the context without hiding the theme choice.
+
+### Tracker Table
+
+The tracker is a comparison surface, not a card collection. Search, status and sort controls precede one bordered, independently scrollable region capped at 520px. Its table keeps a 1050px minimum width, 13px record text, sticky ink header cells and 1px row rules. Linked request IDs are underlined evidence-violet text, and mobile provides explicit horizontal-scroll guidance.
+
+### Attachment & Claim Review
+
+Attachments are full-width ruled rows containing filename, category, lifecycle state, extraction note and removal action. Claim review uses bordered fieldsets with the claim label in the legend and a three-column Value / Unit / Period grid; source locator and original extraction remain immediately below before exclusion or confirmation. On mobile both patterns become a single sequence.
+
+### Dialogs, Warnings & Checklists
+
+Dialogs are compact raised sheets with a 3px structural frame and no shadow. Warning panels use an amber wash and exact consequence copy. Setup tasks use ruled checklist rows with a symbol, task label and requirement note; completion never relies on the symbol alone.
 
 ### Coverage Rows
 
@@ -291,6 +348,9 @@ The right-hand pane uses a stronger pale lavender to close the evidence sequence
 - **Do** pair every semantic colour with exact status language.
 - **Do** keep the human-control statement beside the proposed decision.
 - **Do** preserve the request → coverage → proposal reading order when the layout reflows.
+- **Do** keep tracker scrolling inside its labelled region and expose horizontal-scroll guidance on narrow screens.
+- **Do** keep source, locator, original extraction and lifecycle state beside editable evidence.
+- **Do** preserve all semantic roles and visible focus in both light and dark themes.
 - **Do** remove smooth scrolling, transforms and transitions when reduced motion is requested.
 
 ### Don't:
@@ -300,4 +360,6 @@ The right-hand pane uses a stronger pale lavender to close the evidence sequence
 - **Don't** add shadows to static panes or make evidence rows lift on hover.
 - **Don't** use condensed display type for source prose, filenames or evidence values.
 - **Don't** turn every status or control into a pill.
+- **Don't** hide unknown owners, missing dates, limited coverage or inactive monitoring; label them explicitly.
+- **Don't** let dialogs, sticky table headers or navigation obscure evidence or keyboard focus.
 - **Don't** introduce gradients, decorative finance imagery or autonomous-AI theatre.

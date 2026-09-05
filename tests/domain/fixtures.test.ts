@@ -30,7 +30,7 @@ test("canonical source pack is inspectable and internally consistent", async () 
   const customer = new ExcelJS.Workbook(); await customer.xlsx.readFile(path.join(root, "Customer_Revenue_FY26.xlsx"));
   assert.equal(customer.getWorksheet("Customer Summary")?.getCell("C3").value, 0.31);
   const tracker = new ExcelJS.Workbook(); await tracker.xlsx.readFile(path.join(root, "Northstar_Diligence_Tracker.xlsx"));
-  assert.equal(tracker.getWorksheet("Requests")?.getCell("A2").value, "C-14");
+  assert.equal(tracker.getWorksheet("Requests")?.getCell("A15").value, "C-14");
   assert.equal(fixture.requests[0].items.length, 4); assert.equal(fixture.evidence.length, 1);
   const pdf = await PDFDocument.load(await readFile(path.join(root, "Northstar_IC_Memo.pdf")));
   assert.equal(pdf.getPageCount(), 2); assert.equal(fixture.baselineClaims[0].rawValue, 0.22);
