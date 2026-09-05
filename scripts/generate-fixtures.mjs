@@ -27,7 +27,10 @@ for (const [heading, body] of [["Project Northstar — IC memo", "Synthetic inve
   page.drawText(body, { x: 64, y: 710, size: 12, font });
 }
 await writeFile(path.join(root, "Northstar_IC_Memo.pdf"), await pdf.save());
-await workbook("Northstar_Diligence_Tracker.xlsx", "Requests", [["ID", "Request", "Contracts", "FY25 revenue", "FY26 revenue", "Expiry dates"], ["C-14", "Customer concentration information", "Required", "Required", "Required", "Required"]]);
+const trackerRows = Array.from({ length: 35 }, () => Array(8).fill(null));
+trackerRows[0] = ["ID", "Request", "Workstream", "Owner", "Requested from", "Approved status", "Due", "Coverage"];
+for (const [row, values] of [[3, ["F-02", "Monthly management accounts"]], [6, ["F-05", "Quality of earnings bridge"]], [9, ["C-03", "Customer churn cohorts"]], [12, ["C-08", "Sales pipeline and conversion"]], [15, ["C-14", "Customer concentration information"]], [18, ["T-04", "Platform architecture overview"]], [23, ["T-09", "Security incident history"]], [26, ["L-02", "Material customer agreements"]], [30, ["L-06", "Open litigation and disputes"]], [32, ["P-03", "Leadership employment terms"]], [34, ["P-07", "Employee attrition analysis"]], [35, ["I-01", "Insurance policies and claims"]]]) trackerRows[row - 1] = [...values, "Prepared", null, null, "Awaiting response", null, "No response received"];
+await workbook("Northstar_Diligence_Tracker.xlsx", "Requests", trackerRows);
 await workbook("Customer_Revenue_FY26.xlsx", "Customer Summary", [["Rank", "Customer", "Share of FY26 revenue"], ["Observation", "Largest-customer concentration", 0.31], [1, "Aster Group", 0.31], [2, "Beacon Ltd", 0.14], [3, "Cobalt plc", 0.11], [4, "Dovetail SA", 0.09], [5, "Elm GmbH", 0.08], [6, "Fjord BV", 0.07], [7, "Granite Inc", 0.06], [8, "Harbour Co", 0.05], [9, "Ion SAS", 0.04], [10, "Juniper Ltd", 0.03]], { C3: "0%", C4: "0%", C5: "0%", C6: "0%", C7: "0%", C8: "0%", C9: "0%", C10: "0%", C11: "0%", C12: "0%" });
 
 const demoPath = path.join(root, "demo.json");
