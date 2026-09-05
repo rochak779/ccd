@@ -10,6 +10,6 @@ Use one row per independently verifiable requirement. Add the exact automated te
 | Credentials excluded from Git | PRD §33; implementation S01 | S01 | `.gitignore`; tracked-file check | Implemented locally |
 | Minimal CC’d shell | implementation S01; brand §3 | S01 | Desktop/mobile screenshots; keyboard check; independent finish review `ship` | Implemented locally |
 | GitHub CI | implementation S01 | S01 | `.github/workflows/ci.yml`; GitHub Actions `verify` job | Verified remotely |
-| Published, refreshable deployment | implementation S01 | S01 | Deployment URL and refresh check | Awaiting destination |
+| Published, refreshable deployment | implementation S01 | S01 | `https://ccd-ten.vercel.app`; browser open and refresh check | Verified remotely |
 
 State vocabulary: `Planned`, `Implemented locally`, `Verified remotely`, `Blocked`.

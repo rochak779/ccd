@@ -6,11 +6,11 @@
 |---|---|
 | GitHub owner / repository | `rochak779/ccd` |
 | Visibility | Private |
-| Hosting target | Vercel connected to GitHub; inferred and unconfirmed |
-| Required review policy | One approving review and passing `verify` job before merge; inferred and unconfirmed |
-| Live deployment URL | Open |
+| Hosting target | Vercel project `ccd` |
+| Required review policy | One approving review and passing `verify` job before merge for subsequent session PRs |
+| Live deployment URL | `https://ccd-ten.vercel.app` |
 
-The application is compatible with a standard Next.js deployment. GitHub publication and live deployment are separate gates. The S01 root commit established `main` directly because no earlier base commit existed; subsequent sessions use branch and pull-request review. Live hosting remains open until the Vercel account connection is confirmed.
+The application is compatible with a standard Next.js deployment. GitHub publication and live deployment are separate gates. The S01 root commit established `main` directly because no earlier base commit existed; subsequent sessions use branch and pull-request review. Vercel’s GitHub App does not currently have access to the private repository, so production is deployed through the authenticated CLI and automatic pull-request previews remain unavailable until that access is granted.
 
 ## Vercel settings
 
