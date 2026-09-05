@@ -1,6 +1,6 @@
 # CC’d
 
-CC’d turns ordinary diligence email into an evidence-linked tracker proposal while keeping material decisions with a human reviewer. This repository currently contains the S01 application and delivery foundation.
+CC’d turns ordinary diligence email into an evidence-linked tracker proposal while keeping material decisions with a human reviewer. The repository contains the runnable foundation and S02’s typed contracts and synthetic source pack.
 
 ## Requirements
 
@@ -25,11 +25,12 @@ Open [http://localhost:3000](http://localhost:3000). Stop the development server
 ```bash
 npm run lint
 npm run typecheck
+npm run test:domain
 npm run build
 npm run test:e2e
 ```
 
-The browser suite starts the production server from the completed build, opens the root route, checks the shell, refreshes it and confirms keyboard access to the skip link.
+Regenerate the checked-in synthetic sources with `npm run fixtures:generate`; their canonical map is `fixtures/northstar/manifest.json`. Generation is deterministic. The domain suite inspects the real PDF and workbooks and verifies reference failures. The browser suite starts the production server, checks the shell, refresh and keyboard access.
 
 ## Production run
 
@@ -47,4 +48,4 @@ Copy `.env.example` to `.env.local`. The example lists names only and contains n
 
 ## Delivery
 
-GitHub Actions runs installation from the lockfile, linting, type checking, the production build and the browser smoke suite. The intended hosting mode is GitHub with Vercel; repository coordinates and account connection are still unconfirmed. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) and [docs/sessions/S01.md](docs/sessions/S01.md).
+GitHub Actions runs installation from the lockfile, linting, type checking, domain tests, the production build and the browser smoke suite. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) and the records in [docs/sessions](docs/sessions).

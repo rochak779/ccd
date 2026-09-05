@@ -1,0 +1,303 @@
+{
+  "organisation": {
+    "id": "org_acme",
+    "name": "Acme Capital",
+    "workDomain": "acmecapital.test",
+    "type": "PRIVATE_EQUITY"
+  },
+  "users": [
+    {
+      "id": "user_priya",
+      "name": "Priya Shah",
+      "email": "priya@acmecapital.test"
+    }
+  ],
+  "memberships": [
+    {
+      "id": "membership_priya",
+      "organisationId": "org_acme",
+      "userId": "user_priya",
+      "role": "ADMIN",
+      "state": "ACTIVE"
+    }
+  ],
+  "deal": {
+    "id": "deal_northstar",
+    "organisationId": "org_acme",
+    "name": "Project Northstar",
+    "alias": "northstar@inbound.ccd.test",
+    "stage": "Confirmatory diligence",
+    "monitoringState": "ACTIVE"
+  },
+  "dealAccess": [
+    {
+      "id": "access_priya",
+      "dealId": "deal_northstar",
+      "userId": "user_priya",
+      "role": "ANALYST",
+      "state": "ACTIVE"
+    }
+  ],
+  "senderPolicy": {
+    "id": "policy_acme",
+    "organisationId": "org_acme",
+    "allowedDomains": [
+      "acmecapital.test",
+      "northstar.test"
+    ],
+    "allowedAddresses": []
+  },
+  "sources": [
+    {
+      "id": "src_ic_memo",
+      "dealId": "deal_northstar",
+      "filename": "Northstar_IC_Memo.pdf",
+      "mediaType": "application/pdf",
+      "sha256": "sha256:bb88b5e59ba010661798c5958ad0aa6c855a98176313f3ac943f0c7e9e163a32",
+      "versionState": "CURRENT"
+    },
+    {
+      "id": "src_tracker",
+      "dealId": "deal_northstar",
+      "filename": "Northstar_Diligence_Tracker.xlsx",
+      "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sha256": "sha256:2ca92a7a70784ad214ba354714d6ca15deb4015e36242075dd9a1ece1fd76263",
+      "versionState": "CURRENT"
+    },
+    {
+      "id": "src_customer_fy26",
+      "dealId": "deal_northstar",
+      "filename": "Customer_Revenue_FY26.xlsx",
+      "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sha256": "sha256:fc5177e894871868acb1d65016b81a3bafd3e15ff5be23303722fe26f0b296cf",
+      "versionState": "CURRENT"
+    }
+  ],
+  "baselineClaims": [
+    {
+      "id": "claim_fy25_22",
+      "sourceId": "src_ic_memo",
+      "state": "CONFIRMED",
+      "subject": "Largest-customer concentration",
+      "period": "FY25",
+      "rawValue": 0.22,
+      "displayValue": "22%",
+      "unit": "PERCENT",
+      "locator": {
+        "kind": "pdf_page",
+        "page": 2,
+        "excerpt": "Largest customer represented 22% of FY25 revenue."
+      }
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg_request",
+      "dealId": "deal_northstar",
+      "source": "SEED",
+      "providerMessageId": "req-089",
+      "internetMessageId": "<request@acmecapital.test>",
+      "threadId": "thread_c14",
+      "inReplyTo": null,
+      "from": "priya@acmecapital.test",
+      "to": [
+        "james@northstar.test"
+      ],
+      "cc": [
+        "northstar@inbound.ccd.test"
+      ],
+      "subject": "Northstar — customer concentration information",
+      "sentAt": "2026-09-02T09:12:00Z",
+      "bodyText": "Please provide top ten customer contracts, revenue by customer for FY25 and FY26, and current contract expiry dates.",
+      "bodyHash": "sha256:14d37a7a13d4fb88bbbb03d59f2e1ff0f06e3d8d90defc216179528df2cd324b",
+      "attachmentIds": [],
+      "classification": "DILIGENCE_REQUEST"
+    },
+    {
+      "id": "msg_first_reply",
+      "dealId": "deal_northstar",
+      "source": "SEED",
+      "providerMessageId": "reply-103",
+      "internetMessageId": "<reply-103@northstar.test>",
+      "threadId": "thread_c14",
+      "inReplyTo": "<request@acmecapital.test>",
+      "from": "james@northstar.test",
+      "to": [
+        "priya@acmecapital.test"
+      ],
+      "cc": [
+        "northstar@inbound.ccd.test"
+      ],
+      "subject": "Re: Northstar — customer concentration information",
+      "sentAt": "2026-09-05T09:42:00Z",
+      "bodyText": "Please see the FY26 schedule. Customer concentration remains stable. Contracts and expiry dates are still being compiled.",
+      "bodyHash": "sha256:85e8a8770dd3d485089cadbafd8af020368cac2ec5c218a9d7b39da55d0d76e6",
+      "attachmentIds": [
+        "att_customer_fy26"
+      ],
+      "classification": "DILIGENCE_RESPONSE"
+    },
+    {
+      "id": "msg_control_reply",
+      "dealId": "deal_northstar",
+      "source": "SEED",
+      "providerMessageId": "reply-104",
+      "internetMessageId": "<reply-104@northstar.test>",
+      "threadId": "thread_control",
+      "inReplyTo": "<insurance-request@acmecapital.test>",
+      "from": "james@northstar.test",
+      "to": [
+        "priya@acmecapital.test"
+      ],
+      "cc": [
+        "northstar@inbound.ccd.test"
+      ],
+      "subject": "Re: Insurance renewal details",
+      "sentAt": "2026-09-05T10:05:00Z",
+      "bodyText": "The current insurer is Northstar Mutual and the renewal date is 30 June 2027. This answers both requested items.",
+      "bodyHash": "sha256:a291c1b1c218d0e4cbec7e9817835505e1f81ace5fcc55881a5a139709fd2345",
+      "attachmentIds": [],
+      "classification": "DILIGENCE_RESPONSE"
+    },
+    {
+      "id": "msg_noise",
+      "dealId": "deal_northstar",
+      "source": "SEED",
+      "providerMessageId": "noise-105",
+      "internetMessageId": "<noise-105@northstar.test>",
+      "threadId": "thread_noise",
+      "inReplyTo": null,
+      "from": "james@northstar.test",
+      "to": [
+        "priya@acmecapital.test"
+      ],
+      "cc": [
+        "northstar@inbound.ccd.test"
+      ],
+      "subject": "Tuesday meeting",
+      "sentAt": "2026-09-05T10:20:00Z",
+      "bodyText": "Can we move Tuesday's call to 14:00 BST?",
+      "bodyHash": "sha256:795107d814a8baad40d75ae775618df5211e64a9316e87f066813e5acada7748",
+      "attachmentIds": [],
+      "classification": "SCHEDULING_NOISE"
+    }
+  ],
+  "attachments": [
+    {
+      "id": "att_customer_fy26",
+      "messageId": "msg_first_reply",
+      "sourceId": "src_customer_fy26",
+      "filename": "Customer_Revenue_FY26.xlsx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sizeBytes": 6816,
+      "sha256": "sha256:fc5177e894871868acb1d65016b81a3bafd3e15ff5be23303722fe26f0b296cf",
+      "processingState": "PARSED",
+      "parseWarnings": [],
+      "evidenceIds": [
+        "ev_fy26_schedule"
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "id": "C-14",
+      "dealId": "deal_northstar",
+      "title": "Customer concentration information",
+      "sourceMessageId": "msg_request",
+      "requestedFrom": "james@northstar.test",
+      "requestedAt": "2026-09-02T09:12:00Z",
+      "approvedStatus": "AWAITING_RESPONSE",
+      "processingState": "IDLE",
+      "items": [
+        {
+          "id": "C-14.1",
+          "label": "Top ten customer contracts",
+          "evidenceType": "CONTRACT",
+          "period": null,
+          "required": true,
+          "coverageState": "MISSING"
+        },
+        {
+          "id": "C-14.2",
+          "label": "Revenue by customer FY25",
+          "evidenceType": "FINANCIAL_SCHEDULE",
+          "period": "FY25",
+          "required": true,
+          "coverageState": "MISSING"
+        },
+        {
+          "id": "C-14.3",
+          "label": "Revenue by customer FY26",
+          "evidenceType": "FINANCIAL_SCHEDULE",
+          "period": "FY26",
+          "required": true,
+          "coverageState": "SUPPORTED"
+        },
+        {
+          "id": "C-14.4",
+          "label": "Current contract expiry dates",
+          "evidenceType": "EXPIRY_SCHEDULE",
+          "period": null,
+          "required": true,
+          "coverageState": "MISSING"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev_fy26_schedule",
+      "dealId": "deal_northstar",
+      "sourceId": "src_customer_fy26",
+      "attachmentId": "att_customer_fy26",
+      "supportsRequestItemId": "C-14.3",
+      "locator": {
+        "kind": "spreadsheet_range",
+        "sheet": "Customer Summary",
+        "range": "A2:C12"
+      },
+      "displayValue": "FY26 customer revenue schedule; largest customer 31%",
+      "rawValue": 0.31,
+      "confidence": 0.97
+    }
+  ],
+  "findings": [
+    {
+      "id": "finding_009",
+      "dealId": "deal_northstar",
+      "type": "POTENTIAL_CONFLICT",
+      "state": "OPEN",
+      "suggestedSeverity": "HIGH",
+      "confirmedSeverity": null,
+      "sourceIds": [
+        "src_ic_memo",
+        "src_customer_fy26",
+        "msg_first_reply"
+      ],
+      "reason": "Management describes concentration as stable while comparable FY25 and FY26 observations increased from 22% to 31%."
+    }
+  ],
+  "proposals": [
+    {
+      "id": "proposal_501",
+      "requestId": "C-14",
+      "previousStatus": "AWAITING_RESPONSE",
+      "proposedStatus": "PARTIAL_EVIDENCE_MISSING",
+      "proposalState": "READY",
+      "supportedItems": [
+        "C-14.3"
+      ],
+      "missingItems": [
+        "C-14.1",
+        "C-14.2",
+        "C-14.4"
+      ],
+      "findingIds": [
+        "finding_009"
+      ],
+      "requiresHumanApproval": true
+    }
+  ],
+  "decisions": [],
+  "audit": []
+}
