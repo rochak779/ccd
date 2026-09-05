@@ -4,13 +4,13 @@
 
 | Field | S01 value |
 |---|---|
-| GitHub owner / repository | Open — user destination not yet available |
-| Visibility | Private, inferred from the deal-data product context; unconfirmed |
+| GitHub owner / repository | `rochak779/ccd` |
+| Visibility | Private |
 | Hosting target | Vercel connected to GitHub; inferred and unconfirmed |
 | Required review policy | One approving review and passing `verify` job before merge; inferred and unconfirmed |
 | Live deployment URL | Open |
 
-The application is compatible with a standard Next.js deployment. GitHub publication and live deployment are separate gates. S01 remains locally verified until the repository destination, GitHub authentication and hosting account are available.
+The application is compatible with a standard Next.js deployment. GitHub publication and live deployment are separate gates. The S01 root commit established `main` directly because no earlier base commit existed; subsequent sessions use branch and pull-request review. Live hosting remains open until the Vercel account connection is confirmed.
 
 ## Vercel settings
 
