@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "canonicalFacts": { "requestId": "C-14", "requiredComponents": 4, "supportedAfterFirstReply": 1, "missingAfterFirstReply": 3, "fy25LargestCustomer": 0.22, "fy26LargestCustomer": 0.31, "changePercentagePoints": 9 },
+  "sources": [
+    { "id": "src_ic_memo", "filename": "Northstar_IC_Memo.pdf", "mediaType": "application/pdf", "locator": { "kind": "pdf_page", "page": 2, "excerpt": "Largest customer represented 22% of FY25 revenue." } },
+    { "id": "src_tracker", "filename": "Northstar_Diligence_Tracker.xlsx", "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "locator": { "kind": "spreadsheet_range", "sheet": "Requests", "range": "A2:F2" } },
+    { "id": "src_customer_fy26", "filename": "Customer_Revenue_FY26.xlsx", "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "locator": { "kind": "spreadsheet_range", "sheet": "Customer Summary", "range": "A2:C12" }, "observationLocator": { "kind": "spreadsheet_cell", "sheet": "Customer Summary", "cell": "C3" } }
+  ],
+  "messageFixture": "demo.json",
+  "generation": "npm run fixtures:generate",
+  "validation": "npm run test:domain"
+}
