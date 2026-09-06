@@ -2,6 +2,7 @@
 
 import { AlertTriangle, Check, ChevronRight, FileSpreadsheet, Mail, Minus, ShieldAlert } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ReviewLifecycle } from "./review-lifecycle";
 
 export type TrackerRequest = {
   id: string; title: string; owner: string | null; requestedFrom: string | null;
@@ -41,7 +42,14 @@ export function DealOverview({ limitedBaseline = false, monitoringActive = true,
 }
 
 type EvaluationAvailability = "ready" | "evaluating" | "unavailable";
-type SourceAvailability = "ready" | "unavailable";
+type SourceAvailability = "ready" | "unavailable" | "invalid" | "warning" | "no-access";
+type InspectorTab = "email" | "workbook" | "previous" | "audit";
+
+const SOURCE_IDS = {
+  email: "source-email-c14-reply-20260905",
+  workbook: "source-workbook-customer-revenue-fy26-v1",
+  previous: "source-pdf-northstar-ic-memo-v3",
+} as const;
 
 const COVERAGE = [
   { id: "C-14.1", label: "Top ten customer contracts", claim: "Promised for later delivery", evaluation: "Missing", reason: "No contracts received", source: null },
@@ -50,8 +58,15 @@ const COVERAGE = [
   { id: "C-14.4", label: "Current contract expiry dates", claim: "Still being compiled", evaluation: "Missing", reason: "No expiry schedule received", source: null },
 ] as const;
 
-export function FindingReview({ onBack, evaluation = "ready", sourceAvailability = "ready" }: { onBack: () => void; evaluation?: EvaluationAvailability; sourceAvailability?: SourceAvailability }) {
+type ReviewDecision = "pending" | "partial" | "rejected";
+
+export function FindingReview({ onBack, evaluation = "ready", sourceAvailability = "ready", decision, onDecision }: { onBack: () => void; evaluation?: EvaluationAvailability; sourceAvailability?: SourceAvailability; decision: ReviewDecision; onDecision: (decision: ReviewDecision) => void }) {
   const [selectedId, setSelectedId] = useState("C-14.3");
+  const [inspectorTab, setInspectorTab] = useState<InspectorTab>("workbook");
+  const [surroundingRows, setSurroundingRows] = useState(false);
+  const [action, setAction] = useState<"none" | "edit" | "reject" | "override" | "conflict" | "correct" | "escalate">("none");
+  const [reason, setReason] = useState("");
+  const [notice, setNotice] = useState("");
   const selected = COVERAGE.find(({ id }) => id === selectedId)!;
   const evaluationReady = evaluation === "ready";
 
@@ -80,22 +95,64 @@ export function FindingReview({ onBack, evaluation = "ready", sourceAvailability
               <strong>{row.label}</strong><small><b>Email claim</b>{row.claim}</small><small><b>Attachment support</b>{row.reason}</small><ChevronRight size={18} aria-hidden />
             </button>)}
           </div>
-          <section className="conflict-summary"><div><AlertTriangle size={20} aria-hidden /><div><strong>Potential narrative-to-data conflict</strong><p>“Stable concentration” does not appear consistent with the supplied increase.</p></div></div><dl><div><dt>FY25</dt><dd>22% <small>Confirmed · IC memo p.2</small></dd></div><span aria-hidden>→</span><div><dt>FY26</dt><dd>31% <small>Workbook · Customer Summary C3</small></dd></div><strong>+9 pp</strong></dl></section>
-          <p className="read-only-note">Read-only review · decision controls arrive in a later step.</p>
+          <section className="conflict-summary"><div><AlertTriangle size={20} aria-hidden /><div><strong>Potential narrative-to-data conflict</strong><p>“Stable concentration” does not appear consistent with the supplied increase.</p></div></div><dl><div><dt>Management statement</dt><dd>“Stable” <button type="button" onClick={() => setInspectorTab("email")}>Email · paragraph 2</button></dd></div><div><dt>FY25</dt><dd>22% <button type="button" onClick={() => setInspectorTab("previous")}>IC memo · p.2</button></dd></div><div><dt>FY26</dt><dd>31% <button type="button" onClick={() => setInspectorTab("workbook")}>Workbook · C3</button></dd></div><strong>+9 pp</strong></dl></section>
+          <DecisionControls decision={decision} action={action} reason={reason} notice={notice} onAction={(next) => { setAction(next); setReason(""); setNotice(""); }} onReason={setReason} onApprove={() => { onDecision("partial"); setNotice("Decision recorded. C-14 remains open with 3 missing items."); }} onSubmit={() => {
+            if ((action === "reject" || action === "override" || action === "conflict" || action === "correct") && !reason.trim()) { setNotice("Enter a reason before recording this decision."); return; }
+            if (action === "reject") onDecision("rejected");
+            const messages = { edit: "Edited proposal recorded separately; the original proposal is retained.", reject: "Proposal rejected. The approved tracker remains unchanged.", override: "Completeness override recorded with 3 missing-evidence labels retained.", conflict: "Conflict decision recorded independently with its rationale.", correct: "Evidence correction recorded. The earlier approval remains historical and a revised proposal is ready.", escalate: "Finding assigned to deal lead Sam Lee. No email was sent.", none: "" };
+            setNotice(messages[action]); setAction("none"); setReason("");
+          }} />
         </> : null}
       </section>
 
       <section className="source-context" aria-labelledby="source-title">
         <div><span>Selected component</span><h2 id="source-title">{selected.label}</h2></div>
-        {selected.source && sourceAvailability === "ready" ? <div className="source-preview"><span>Workbook evidence</span><strong>Customer_Revenue_FY26.xlsx</strong><code>Customer Summary!A2:C12</code><table><thead><tr><th>Customer</th><th>Revenue</th><th>Share</th></tr></thead><tbody><tr className="source-highlight"><td>Largest Customer Ltd</td><td>£9.3m</td><td>31%</td></tr><tr><td>Customer B</td><td>£4.8m</td><td>16%</td></tr></tbody></table><p>Supports the FY26 revenue schedule. The 31% observation is located at <code>Customer Summary!C3</code>.</p></div> : selected.source ? <aside role="alert"><strong>Source unavailable</strong><p>The workbook preview cannot be loaded. Its recorded filename and locator are retained: <code>{selected.source}</code>.</p></aside> : <div className="gap-explanation"><Minus size={22} aria-hidden /><strong>No supporting source</strong><p>{selected.reason}. The reply’s wording is shown for context, but it is not evidence that this component was supplied.</p></div>}
+        {selected.source ? <EvidenceInspector activeTab={inspectorTab} onTab={setInspectorTab} availability={sourceAvailability} surroundingRows={surroundingRows} onSurroundingRows={() => setSurroundingRows((open) => !open)} /> : <div className="gap-explanation"><Minus size={22} aria-hidden /><strong>No supporting source</strong><p>{selected.reason}. The reply’s wording is shown for context, but it is not evidence that this component was supplied.</p></div>}
       </section>
     </div>
   </article>;
 }
 
+function DecisionControls({ decision, action, reason, notice, onAction, onReason, onApprove, onSubmit }: { decision: ReviewDecision; action: "none" | "edit" | "reject" | "override" | "conflict" | "correct" | "escalate"; reason: string; notice: string; onAction: (action: "none" | "edit" | "reject" | "override" | "conflict" | "correct" | "escalate") => void; onReason: (value: string) => void; onApprove: () => void; onSubmit: () => void }) {
+  return <section className="decision-controls" aria-label="Reviewer decisions">
+    <div className="decision-actions"><button className="primary-action-global" type="button" disabled={decision === "partial"} onClick={onApprove}>{decision === "partial" ? "Partial recorded" : "Approve as partial"}</button><button type="button" onClick={() => onAction("edit")}>Edit proposed update</button><button type="button" onClick={() => onAction("reject")}>Reject proposal</button></div>
+    <details><summary>Corrections and escalation</summary><div className="secondary-decisions"><button type="button" onClick={() => onAction("correct")}>Correct period or relevance</button><button type="button" onClick={() => onAction("override")}>Override completeness</button><button type="button" onClick={() => onAction("conflict")}>Decide potential conflict</button><button type="button" onClick={() => onAction("escalate")}>Escalate to deal lead</button></div></details>
+    {action !== "none" ? <div className="decision-form"><label>{action === "override" ? "Reason for override" : "Decision rationale"}<textarea value={reason} onChange={(event) => onReason(event.target.value)} placeholder={action === "escalate" ? "Optional internal note" : "Required for material corrections and overrides"} /></label><div><button type="button" onClick={onSubmit}>Record {action}</button><button type="button" onClick={() => onAction("none")}>Cancel</button></div></div> : null}
+    {notice ? <p className={notice.startsWith("Enter") ? "decision-error" : "decision-notice"} role={notice.startsWith("Enter") ? "alert" : "status"}>{notice}</p> : null}
+  </section>;
+}
+
+function EvidenceInspector({ activeTab, onTab, availability, surroundingRows, onSurroundingRows }: { activeTab: InspectorTab; onTab: (tab: InspectorTab) => void; availability: SourceAvailability; surroundingRows: boolean; onSurroundingRows: () => void }) {
+  const tabs: { id: InspectorTab; label: string }[] = [{ id: "email", label: "Email" }, { id: "workbook", label: "Workbook" }, { id: "previous", label: "Previous evidence" }, { id: "audit", label: "Audit" }];
+  return <div className="evidence-inspector">
+    <div className="inspector-tabs" role="tablist" aria-label="Evidence sources">{tabs.map((tab) => <button key={tab.id} type="button" role="tab" aria-selected={activeTab === tab.id} aria-controls={`source-panel-${tab.id}`} onClick={() => onTab(tab.id)}>{tab.label}</button>)}</div>
+    <div id={`source-panel-${activeTab}`} role="tabpanel" className="source-preview">
+      {activeTab === "email" ? <><SourceMeta kind="Original email" name="James Carter reply · 5 September 2026" sourceId={SOURCE_IDS.email} locator="Body · paragraph 2" period="FY26" unit="Narrative statement" /><blockquote>“Please see the FY26 schedule. Customer concentration remains stable. Contracts and expiry dates are still being compiled.”</blockquote><p>Surrounding context: James confirms one attachment and describes the contracts and expiry dates as outstanding.</p></> : null}
+      {activeTab === "workbook" ? <WorkbookSource availability={availability} surroundingRows={surroundingRows} onSurroundingRows={onSurroundingRows} /> : null}
+      {activeTab === "previous" ? <><SourceMeta kind="Previous evidence" name="Northstar_IC_Memo.pdf · version 3" sourceId={SOURCE_IDS.previous} locator="Page 2 · paragraph 4" period="FY25" unit="% of revenue" /><blockquote>“Largest Customer Ltd represented 22% of FY25 revenue.”</blockquote><p>Page context: customer concentration is discussed alongside the top-five customer share. This is prior evidence, not support for the requested FY26 schedule.</p></> : null}
+      {activeTab === "audit" ? <><SourceMeta kind="Provenance audit" name="C-14 evidence links" sourceId={SOURCE_IDS.workbook} locator="Customer Summary!C3" period="FY26" unit="% of revenue" /><ol className="audit-list"><li><strong>5 Sep 2026 · 10:42</strong>Email and attachment received from James Carter.</li><li><strong>5 Sep 2026 · 10:43</strong>Workbook parsed; C3 retained as raw value 0.31 and displayed value 31%.</li><li><strong>5 Sep 2026 · 10:44</strong>Source linked to C-14.3 by evaluation; not yet analyst-approved.</li></ol></> : null}
+    </div>
+  </div>;
+}
+
+function SourceMeta({ kind, name, sourceId, locator, period, unit }: { kind: string; name: string; sourceId: string; locator: string; period: string; unit: string }) {
+  return <><span>{kind}</span><strong>{name}</strong><code>{locator}</code><dl className="source-metadata"><div><dt>Source ID</dt><dd><code>{sourceId}</code></dd></div><div><dt>Period</dt><dd>{period}</dd></div><div><dt>Unit</dt><dd>{unit}</dd></div></dl></>;
+}
+
+function WorkbookSource({ availability, surroundingRows, onSurroundingRows }: { availability: SourceAvailability; surroundingRows: boolean; onSurroundingRows: () => void }) {
+  if (availability !== "ready" && availability !== "warning") {
+    const state = availability === "invalid" ? ["Invalid locator", "Customer Summary!C99 does not resolve to the cited observation. No whole-document citation has been substituted."] : availability === "no-access" ? ["No local file access", "This browser cannot access the local workbook. The recorded filename, source ID and locator remain available."] : ["Source unavailable", "The workbook preview cannot be loaded. Its recorded filename, source ID and locator are retained."];
+    return <aside role="alert"><strong>{state[0]}</strong><p>{state[1]}</p><code>Customer_Revenue_FY26.xlsx · {SOURCE_IDS.workbook} · Customer Summary!C3</code></aside>;
+  }
+  return <><SourceMeta kind="Workbook evidence" name="Customer_Revenue_FY26.xlsx · version 1" sourceId={SOURCE_IDS.workbook} locator="Customer Summary!C3" period="FY26" unit="% of revenue" /><span>Surrounding range <code>Customer Summary!A2:C12</code></span>{availability === "warning" ? <aside role="status"><strong>Parse warning</strong><p>Workbook formatting was partially recovered. The cited raw value, displayed value and formula context remain readable.</p></aside> : null}<table aria-label="Workbook surrounding rows"><thead><tr><th>Row</th><th>Customer</th><th>Revenue</th><th>Share</th></tr></thead><tbody>{surroundingRows ? <tr><th scope="row">2</th><td>Customer</td><td>Revenue</td><td>Share</td></tr> : null}<tr className="source-highlight"><th scope="row">3</th><td>Largest Customer Ltd</td><td>£9.3m</td><td>31%</td></tr>{surroundingRows ? <><tr><th scope="row">4</th><td>Customer B</td><td>£4.8m</td><td>16%</td></tr><tr><th scope="row">5</th><td>Customer C</td><td>£3.6m</td><td>12%</td></tr></> : null}</tbody></table><p><strong>Cell C3</strong> · raw value <code>0.31</code> · displayed value <code>31%</code> · formula <code>=B3/$B$13</code></p><button className="context-toggle" type="button" aria-expanded={surroundingRows} onClick={onSurroundingRows}>{surroundingRows ? "Close surrounding rows" : "Open surrounding rows"}</button></>;
+}
+
 export function SampleReviewWorkspace({ evaluation = "ready", sourceAvailability = "ready" }: { evaluation?: EvaluationAvailability; sourceAvailability?: SourceAvailability }) {
   const [reviewing, setReviewing] = useState(false);
-  return reviewing ? <FindingReview onBack={() => setReviewing(false)} evaluation={evaluation} sourceAvailability={sourceAvailability} /> : <DealOverview onReview={() => setReviewing(true)} />;
+  const [decision, setDecision] = useState<ReviewDecision>("pending");
+  useEffect(() => { const saved = localStorage.getItem("ccd:c14:first-decision") as ReviewDecision | null; if (saved) queueMicrotask(() => setDecision(saved)); }, []);
+  function recordDecision(next: ReviewDecision) { setDecision(next); localStorage.setItem("ccd:c14:first-decision", next); }
+  return reviewing ? <><FindingReview onBack={() => setReviewing(false)} evaluation={evaluation} sourceAvailability={sourceAvailability} decision={decision} onDecision={recordDecision} /><section className="lifecycle-mount"><ReviewLifecycle unreadableReplacement={sourceAvailability === "warning"} /></section></> : <DealOverview onReview={() => setReviewing(true)} requests={decision === "partial" ? NORTHSTAR_REQUESTS.map((request) => request.id === "C-14" ? { ...request, approvedStatus: "Partial — evidence missing" as const } : request) : NORTHSTAR_REQUESTS} />;
 }
 
 export function RequestTracker({ requests = NORTHSTAR_REQUESTS }: { requests?: TrackerRequest[] }) {

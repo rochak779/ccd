@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   attachmentSchema, auditEnvelopeSchema, baselineClaimSchema, baselineSourceSchema,
   dealAccessSchema, dealSchema, decisionSchema, evidenceSchema, findingSchema,
-  membershipSchema, messageSchema, organisationSchema, proposalSchema, requestSchema,
+  membershipSchema, messageSchema, organisationSchema, proposalSchema, requestSchema, correctionSchema, escalationSchema,
   senderPolicySchema, userSchema,
 } from "../domain/contracts.ts";
 
@@ -15,6 +15,7 @@ export const workspaceSchema = z.object({
   sources: z.array(baselineSourceSchema), baselineClaims: z.array(baselineClaimSchema), messages: z.array(messageSchema),
   attachments: z.array(attachmentSchema), requests: z.array(requestSchema), evidence: z.array(evidenceSchema),
   findings: z.array(findingSchema), proposals: z.array(proposalSchema), decisions: z.array(decisionSchema),
+  corrections: z.array(correctionSchema).default([]), escalations: z.array(escalationSchema).default([]),
   audit: z.array(auditEnvelopeSchema),
 });
 
@@ -35,5 +36,5 @@ export interface WorkspaceRepository {
 export const emptyWorkspace = (): Workspace => ({
   schemaVersion: CURRENT_SCHEMA_VERSION, revision: 0, organisations: [], users: [], memberships: [], deals: [],
   dealAccess: [], senderPolicies: [], sources: [], baselineClaims: [], messages: [], attachments: [], requests: [],
-  evidence: [], findings: [], proposals: [], decisions: [], audit: [],
+  evidence: [], findings: [], proposals: [], decisions: [], corrections: [], escalations: [], audit: [],
 });

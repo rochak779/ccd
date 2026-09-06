@@ -28,10 +28,12 @@ export const attachmentSchema = z.object({ id, messageId: id, sourceId: id, file
 
 export const requestItemSchema = z.object({ id, label: z.string().min(1), evidenceType: z.enum(["CONTRACT", "FINANCIAL_SCHEDULE", "EXPIRY_SCHEDULE", "OTHER"]), period: z.string().nullable(), required: z.boolean(), coverageState: z.enum(["NOT_EVALUATED", "SUPPORTED", "PARTIALLY_SUPPORTED", "MENTIONED_ONLY", "IRRELEVANT", "UNREADABLE", "MISSING"]) });
 export const requestSchema = z.object({ id, dealId: id, title: z.string().min(1), sourceMessageId: id, requestedFrom: email, requestedAt: utc, extraction: z.object({ sourceMessageId: id, confidence: z.number().min(0).max(1) }).optional(), approvedStatus: z.enum(["AWAITING_RESPONSE", "PARTIAL_EVIDENCE_MISSING", "COMPLETE", "SUPERSEDED"]), processingState: z.enum(["IDLE", "RESPONSE_PROCESSING", "FAILED"]), items: z.array(requestItemSchema).min(1) });
-export const evidenceSchema = z.object({ id, dealId: id, sourceId: id, attachmentId: id.optional(), supportsRequestItemId: id, locator: locatorSchema, displayValue: z.string().min(1), rawValue: z.number(), confidence: z.number().min(0).max(1) });
+export const evidenceSchema = z.object({ id, dealId: id, sourceId: id, attachmentId: id.optional(), supportsRequestItemId: id, locator: locatorSchema, displayValue: z.string().min(1), rawValue: z.number(), confidence: z.number().min(0).max(1), relevance: z.enum(["RELEVANT", "UNRELATED"]).default("RELEVANT"), period: z.string().nullable().default(null), unit: z.string().nullable().default(null) });
 export const findingSchema = z.object({ id, dealId: id, type: z.enum(["MISSING_EVIDENCE", "UNREADABLE_SOURCE", "POTENTIAL_CONFLICT"]), state: z.enum(["OPEN", "RESOLVED", "DISMISSED"]), suggestedSeverity: z.enum(["HIGH", "MEDIUM", "LOW"]), confirmedSeverity: z.enum(["HIGH", "MEDIUM", "LOW"]).nullable(), sourceIds: z.array(id).min(1), reason: z.string().min(1) });
 export const proposalSchema = z.object({ id, requestId: id, previousStatus: z.string(), proposedStatus: z.enum(["PARTIAL_EVIDENCE_MISSING", "READY_TO_COMPLETE"]), proposalState: z.enum(["READY", "STALE", "RECORDED", "REJECTED"]), supportedItems: z.array(id), missingItems: z.array(id), findingIds: z.array(id), requiresHumanApproval: z.literal(true) });
-export const decisionSchema = z.object({ id, proposalId: id, actorId: id, action: z.enum(["APPROVE", "EDIT", "REJECT", "ESCALATE", "OVERRIDE_COMPLETE"]), reason: z.string().nullable(), decidedAt: utc, before: z.record(z.string(), z.unknown()), after: z.record(z.string(), z.unknown()), sourceIds: z.array(id) });
+export const decisionSchema = z.object({ id, commandId: id.optional(), proposalId: id, actorId: id, action: z.enum(["APPROVE", "EDIT", "REJECT", "ESCALATE", "OVERRIDE_COMPLETE", "DISMISS_CONFLICT", "CONFIRM_CONFLICT", "CONFIRM_COMPLETE", "KEEP_OPEN", "ACCEPT_EXPLANATION"]), reason: z.string().nullable(), decidedAt: utc, before: z.record(z.string(), z.unknown()), after: z.record(z.string(), z.unknown()), sourceIds: z.array(id) });
+export const correctionSchema = z.object({ id, evidenceId: id, actorId: id, correctedAt: utc, before: z.record(z.string(), z.unknown()), after: z.record(z.string(), z.unknown()), invalidatedProposalIds: z.array(id) });
+export const escalationSchema = z.object({ id, findingId: id, assignedToUserId: id, actorId: id, reason: z.string().min(1), createdAt: utc, internalHref: z.string().min(1) });
 export const auditEnvelopeSchema = z.object({ id, sequence: z.number().int().positive(), timestamp: utc, actorType: z.enum(["USER", "SYSTEM"]), actorId: id, action: z.string().min(1), entityType: z.string().min(1), entityId: id, before: z.record(z.string(), z.unknown()).nullable(), after: z.record(z.string(), z.unknown()).nullable(), sourceIds: z.array(id), previousHash: z.string(), hash: sha256 });
 
 export const demoFixtureSchema = z.object({
@@ -39,7 +41,7 @@ export const demoFixtureSchema = z.object({
   deal: dealSchema, dealAccess: z.array(dealAccessSchema), senderPolicy: senderPolicySchema,
   sources: z.array(baselineSourceSchema), baselineClaims: z.array(baselineClaimSchema), messages: z.array(messageSchema),
   attachments: z.array(attachmentSchema), requests: z.array(requestSchema), evidence: z.array(evidenceSchema),
-  findings: z.array(findingSchema), proposals: z.array(proposalSchema), decisions: z.array(decisionSchema), audit: z.array(auditEnvelopeSchema),
+  findings: z.array(findingSchema), proposals: z.array(proposalSchema), decisions: z.array(decisionSchema), corrections: z.array(correctionSchema).default([]), escalations: z.array(escalationSchema).default([]), audit: z.array(auditEnvelopeSchema),
 });
 
 export type DemoFixture = z.infer<typeof demoFixtureSchema>;
