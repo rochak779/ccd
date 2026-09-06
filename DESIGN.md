@@ -173,6 +173,16 @@ components:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
     padding: "clamp(24px, 4vw, 48px)"
+  queue-row:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    padding: "20px 0"
+    height: "124px"
+  coverage-selection:
+    backgroundColor: "{colors.accent-soft}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.badge}"
+    padding: "14px 8px"
 ---
 
 # Design System: CC’d
@@ -194,6 +204,7 @@ The system uses expressive condensed type for orientation and restrained sans-se
 - Desktop-first density that becomes a single reading sequence on mobile.
 - Persistent deal context, theme controls and section navigation around the working record.
 - Tables, fields and provenance rows that favour comparison over card-based presentation.
+- Ranked findings hand into one joined request, proposal and source review record.
 
 ## Colors
 
@@ -261,7 +272,7 @@ The palette feels cool, assured and operational: near-black violet ink gives the
 
 The workspace uses one centred container capped at 1280px with 32px wide-screen gutters. A 76px dark header carries account context, theme choice and a 48px scrollable section-navigation row. A 220px lavender deal band joins directly to one vertically stacked workspace frame. Overview, tracker, baseline and setup sections use responsive 24–48px padding and are separated by 3px structural seams.
 
-Wide data tables remain scrollable inside their own bordered region and use a sticky dark header; the page itself must never overflow horizontally. Below 768px, the container uses 16px gutters, header context stacks, navigation remains horizontally scrollable, control grids become one column, attachment metadata stacks, and claim fieldsets collapse from three columns to one. The reading sequence remains overview → requests → baseline → deal setup.
+Wide data tables remain scrollable inside their own bordered region and use a sticky dark header; the page itself must never overflow horizontally. The finding review uses three joined columns at 1200px and above: request thread, proposed status with selectable coverage, then source context. From 768–1199px, the request thread spans the full width above a proposal/source pair. Below 768px, the container uses compact gutters, the review becomes one request → proposal → source sequence, status comparisons stack vertically, coverage rows become single-column records, and queue actions become full width. Header context also stacks, navigation remains horizontally scrollable, control grids become one column, attachment metadata stacks, and claim fieldsets collapse from three columns to one. The broader workspace reading sequence remains overview → requests → baseline → deal setup.
 
 Spacing follows an 8px-rooted rhythm, with 12px and 20px optical steps where compact text or icon relationships require them. Large gaps separate regions; individual evidence rows stay compact and are divided by rules instead of nested cards.
 
@@ -333,11 +344,19 @@ Dialogs are compact raised sheets with a 3px structural frame and no shadow. War
 
 ### Coverage Rows
 
-Coverage is a labelled list of 48px rows, each with a compact marker, evidence-component name and right-aligned status. Supported rows use green; missing rows use amber. Fine violet rules keep comparison easy without turning each item into its own card.
+Coverage has two densities. Summary coverage is a labelled list of 48px rows with a compact marker, evidence-component name and right-aligned status. Finding review expands each component into a selectable ruled row that keeps the requested item, email claim and attachment support distinct. Supported rows use green; missing rows use amber. The selected row uses a soft violet wash and inset violet outline, and updates only the related source context; selection never asserts support or approval.
 
 ### Proposed Decision Pane
 
-The right-hand pane uses a stronger pale lavender to close the evidence sequence. A concise proposed-state heading leads, human approval is separated by a fine rule, and the prepared action ends the pane. The unavailable state is explained immediately above the disabled yellow button.
+The proposal region uses a stronger pale lavender to distinguish machine-prepared state from the approved record. Current approved and proposed statuses are shown together before coverage, with labels that keep the transition explicit. In read-only review, the region ends with an exact note that controls arrive later; do not infer or fabricate actions. When evaluation is pending or unavailable, replace the proposal details with a textual warning while preserving the approved status and source material.
+
+### Ranked Review Queue
+
+The overview queue is a ruled row, not a dashboard card. It orders severity and workstream metadata, the finding summary and exact source count, then one yellow review action. The action count must match the sources the review actually exposes. On narrow screens the row stacks in that order and the action fills the available width.
+
+### Joined Finding Review
+
+A dark toolbar and 4px structural seams bind request thread, proposal and source context into one review record. Suggested severity and confidence are always labelled as system suggestions. Source context shows the recorded filename, monospace locator, compact evidence excerpt and an explanation of what it supports. A missing component receives an explicit no-source explanation; a failed preview retains the filename and locator instead of collapsing the pane.
 
 ## Do's and Don'ts
 
@@ -350,6 +369,9 @@ The right-hand pane uses a stronger pale lavender to close the evidence sequence
 - **Do** preserve the request → coverage → proposal reading order when the layout reflows.
 - **Do** keep tracker scrolling inside its labelled region and expose horizontal-scroll guidance on narrow screens.
 - **Do** keep source, locator, original extraction and lifecycle state beside editable evidence.
+- **Do** keep ranked queue metadata, finding summary and exact source count together before the review action.
+- **Do** let coverage selection change only the corresponding source or gap explanation.
+- **Do** retain the approved status, raw reply and recorded locator when evaluation or preview fails.
 - **Do** preserve all semantic roles and visible focus in both light and dark themes.
 - **Do** remove smooth scrolling, transforms and transitions when reduced motion is requested.
 
@@ -362,4 +384,6 @@ The right-hand pane uses a stronger pale lavender to close the evidence sequence
 - **Don't** turn every status or control into a pill.
 - **Don't** hide unknown owners, missing dates, limited coverage or inactive monitoring; label them explicitly.
 - **Don't** let dialogs, sticky table headers or navigation obscure evidence or keyboard focus.
+- **Don't** present suggested severity, confidence or proposed status as a human-approved decision.
+- **Don't** document or imply source-inspector tabs or decision controls until those interactions ship.
 - **Don't** introduce gradients, decorative finance imagery or autonomous-AI theatre.

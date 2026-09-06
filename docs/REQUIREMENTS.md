@@ -23,5 +23,8 @@ Use one row per independently verifiable requirement. Add the exact automated te
 | Recoverable baseline intake and limited coverage | PRD §§17.1.8–17.1.9, 33 | S08 | cumulative browser test; component validation states | Implemented locally |
 | Source-linked human baseline confirmation | PRD §17.1.10 | S09 | cumulative browser test; retained corrections | Implemented locally |
 | Data-derived overview and 12-record tracker | PRD §§17.1.13, 17.14, 17.24, 21, 25 | S10 | cumulative browser test; tracker source fixture | Implemented locally |
+| Exact-count ranked review entry and read-only finding composition | PRD §§17.9, 17.11; brand §§14.8–14.9, 15.2 | S16 | `tests/e2e/s16-review.spec.ts`; light/dark desktop/mobile captures | Implemented locally |
+| Four-component coverage selection reveals only related evidence or an explicit gap | PRD §17.11; brand §14.8 | S16 | source-link and missing-row browser case | Implemented locally |
+| Evaluation/source failures retain approved state and raw sources | PRD §17.11; brand §§9, 15.2 | S16 | negative/recovery browser case | Implemented locally |
 
 State vocabulary: `Planned`, `Implemented locally`, `Verified remotely`, `Blocked`.

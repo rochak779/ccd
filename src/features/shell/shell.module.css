@@ -3,6 +3,7 @@
   --text-secondary: #c4b8cf; --text-muted: #aa9bb8; --frame: #766985; --border: #494052; --border-control: #8c7a9c;
   --accent: #c9a6ea; --accent-hover: #dbbff2; --accent-dim: #3a294b; --lavender: #3a294b; --focus: #c9a6ea;
   --success: #9dd9b6; --success-dim: #20362a; --warning: #eac266; --warning-dim: #382e1b; --danger: #f2a0af; --danger-dim: #41232d;
+  --proposal-surface: #30263a; --proposal-rule: #514360;
 }
 .themeRoot { --action-hover: #e8ba38; --danger: #a63b4e; --danger-dim: #fbeaee; min-height: 100dvh; background: var(--bg); color: var(--text); }
 .skipLink { position: fixed; z-index: 80; top: 12px; left: 12px; padding: 10px 14px; background: var(--action); color: var(--on-action); border-radius: 8px; transform: translateY(-160%); }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-05T18:00:00Z",
+  "generatedAt": "2026-09-06T02:07:24Z",
   "title": "Design System: CC’d",
   "extensions": {
     "colorMeta": {
@@ -165,7 +165,8 @@
       { "name": "reduced-motion", "value": "prefers-reduced-motion: reduce", "purpose": "Removes animation, transitions and smooth scrolling." }
     ],
     "breakpoints": [
-      { "name": "stack-decision", "value": "950px" },
+      { "name": "three-column-review", "value": "1200px" },
+      { "name": "paired-review", "value": "768px" },
       { "name": "single-sequence", "value": "767px" }
     ]
   },
@@ -248,6 +249,29 @@
       "description": "Dense comparison table inside its own labelled, scrollable evidence region.",
       "html": "<div class=\"ds-table-region\" tabindex=\"0\" role=\"region\" aria-label=\"Request tracker\"><table><thead><tr><th>ID</th><th>Request</th><th>Approved status</th></tr></thead><tbody><tr><td><a href=\"#\">C-14</a></td><td>Customer concentration information</td><td>Awaiting response</td></tr></tbody></table></div>",
       "css": ".ds-table-region { max-width: 100%; overflow: auto; border: 1px solid var(--border, #dcd4e5); scrollbar-color: var(--accent, #5c367a) var(--surface, #fcfaff); } .ds-table-region table { width: 100%; min-width: 620px; border-collapse: collapse; color: var(--text, #211a2a); font: 400 13px/1.5 \"IBM Plex Sans\", sans-serif; } .ds-table-region th, .ds-table-region td { padding: 14px 12px; border-bottom: 1px solid var(--border, #dcd4e5); text-align: left; vertical-align: top; } .ds-table-region th { background: var(--frame, #211a2a); color: var(--on-header, #fcfaff); } .ds-table-region a { color: var(--accent, #5c367a); font-weight: 600; text-underline-offset: 3px; } .ds-table-region:focus-visible { outline: 3px solid var(--focus, #5c367a); outline-offset: 3px; }"
+    },
+    {
+      "name": "Ranked Review Queue Row",
+      "kind": "custom",
+      "refersTo": "queue-row",
+      "description": "Ruled overview row that ranks one finding, states its exact source count and ends with the review action.",
+      "html": "<article class=\"ds-queue-row\"><div class=\"ds-queue-rank\"><span>High · suggested</span><small>Potential conflict · Commercial</small></div><div class=\"ds-queue-summary\"><strong>F-009 · Customer response is incomplete</strong><p>One of four requested components is supplied.</p><small>Needs analyst review · C-14 · 3 sources</small></div><button class=\"ds-queue-action\" type=\"button\">Review 3 sources <svg aria-hidden=\"true\" width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"m9 18 6-6-6-6\"></path></svg></button></article>",
+      "css": ".ds-queue-row { min-height: 124px; padding: 20px 0; display: grid; grid-template-columns: minmax(150px,.28fr) minmax(300px,1fr) auto; align-items: center; gap: 24px; color: var(--text,#211a2a); background: var(--surface,#fcfaff); border-block: 1px solid var(--border,#dcd4e5); font-family: \"IBM Plex Sans\",sans-serif; } .ds-queue-rank,.ds-queue-summary { display: grid; gap: 6px; } .ds-queue-rank span { width: fit-content; padding: 4px 8px; color: var(--danger,#a63b4e); background: var(--danger-dim,#fbeaee); border-radius: 6px; font-size: 12px; font-weight: 700; } .ds-queue-row small { color: var(--text-muted,#726879); font-size: 12px; } .ds-queue-summary p { margin: 0; color: var(--text-secondary,#554b61); } .ds-queue-action { min-height: 44px; padding: 0 18px; display: inline-flex; align-items: center; gap: 8px; color: var(--on-action,#211a2a); background: var(--action,#f4ce58); border: 1px solid var(--on-action,#211a2a); border-radius: 8px; font-weight: 600; } .ds-queue-action:hover { background: #e8ba38; } .ds-queue-action:focus-visible { outline: 3px solid var(--focus,#5c367a); outline-offset: 3px; } @media(max-width:767px){.ds-queue-row{grid-template-columns:1fr;gap:16px}.ds-queue-action{width:100%;justify-content:center}}"
+    },
+    {
+      "name": "Selectable Coverage Record",
+      "kind": "custom",
+      "refersTo": "coverage-selection",
+      "description": "A ruled coverage choice that separates requested item, email claim and attachment support while controlling the adjacent source context.",
+      "html": "<button class=\"ds-coverage-choice\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-coverage-state\">✓ Supported</span><strong>Revenue by customer FY26</strong><small><b>Email claim</b> FY26 schedule attached</small><small><b>Attachment support</b> Customer schedule received and parsed</small><span aria-hidden=\"true\">›</span></button>",
+      "css": ".ds-coverage-choice { width: 100%; min-height: 92px; padding: 14px 8px; display: grid; grid-template-columns: minmax(125px,.9fr) minmax(120px,1fr) minmax(120px,1fr) 18px; grid-template-rows: auto auto; align-items: center; gap: 5px 14px; color: var(--text,#211a2a); background: var(--accent-dim,#e9def4); border: 0; border-block: 1px solid var(--proposal-rule,#cdbdde); outline: 2px solid var(--accent,#5c367a); outline-offset: -2px; text-align: left; font-family: \"IBM Plex Sans\",sans-serif; } .ds-coverage-choice>strong { grid-column: 2/5; font-size: 14px; } .ds-coverage-choice small { display: grid; color: var(--text-secondary,#554b61); font-size: 12px; } .ds-coverage-choice small b { color: var(--text-muted,#726879); } .ds-coverage-state { width: fit-content; padding: 3px 8px; color: var(--success,#246546); background: var(--success-dim,#e5f3ea); border-radius: 6px; font-size: 12px; font-weight: 700; } .ds-coverage-choice:hover { background: color-mix(in srgb,var(--accent-dim,#e9def4) 75%,transparent); } .ds-coverage-choice:focus-visible { outline: 3px solid var(--focus,#5c367a); outline-offset: 3px; } @media(max-width:767px){.ds-coverage-choice{grid-template-columns:1fr 18px;grid-template-rows:repeat(4,auto)}.ds-coverage-choice>strong,.ds-coverage-choice small{grid-column:1/-1}}"
+    },
+    {
+      "name": "Joined Finding Review",
+      "kind": "custom",
+      "description": "One structurally joined request, proposed-status and source record with explicit approved/proposed separation.",
+      "html": "<article class=\"ds-review\"><header>Finding F-009 · Customer evidence incomplete</header><div class=\"ds-review-columns\"><section><strong>Request thread</strong><p>Request and reply remain readable.</p></section><section class=\"ds-review-proposal\"><strong>Current approved → Proposed</strong><p>Coverage stays separate from approval.</p></section><section><strong>Selected source</strong><code>Customer Summary!A2:C12</code></section></div></article>",
+      "css": ".ds-review { color: var(--text,#211a2a); font-family: \"IBM Plex Sans\",sans-serif; } .ds-review>header { min-height: 82px; padding: 16px 24px; display: flex; align-items: center; color: var(--on-header,#fcfaff); background: var(--frame,#211a2a); font-weight: 600; } .ds-review-columns { display: grid; grid-template-columns: minmax(240px,.76fr) minmax(390px,1.16fr) minmax(390px,1.28fr); gap: 4px; background: var(--frame,#211a2a); } .ds-review-columns section { min-width: 0; padding: 32px 28px; background: var(--surface,#fcfaff); } .ds-review-proposal { background: var(--proposal-surface,#eee4f7)!important; } .ds-review p { color: var(--text-secondary,#554b61); } .ds-review code { padding: 4px 7px; color: var(--accent,#5c367a); background: var(--accent-dim,#e9def4); border-radius: 4px; overflow-wrap: anywhere; } @media(min-width:768px) and (max-width:1199px){.ds-review-columns{grid-template-columns:1fr 1fr}.ds-review-columns section:first-child{grid-column:1/-1}} @media(max-width:767px){.ds-review-columns{grid-template-columns:1fr}.ds-review-columns section{padding:28px 20px}}"
     }
   ],
   "narrative": {
@@ -260,7 +284,8 @@
       "Explicit status words, human-control language and inspectable evidence counts.",
       "Desktop-first density that becomes a single reading sequence on mobile.",
       "Persistent deal context, theme controls and section navigation around the working record.",
-      "Tables, fields and provenance rows that favour comparison over card-based presentation."
+      "Tables, fields and provenance rows that favour comparison over card-based presentation.",
+      "Ranked findings hand into one joined request, proposal and source review record."
     ],
     "rules": [
       { "name": "The Context Is Not Correctness Rule", "body": "Lavender establishes context or selection; it never certifies that evidence is sufficient.", "section": "colors" },
@@ -277,10 +302,13 @@
       "Do pair every semantic colour with exact status language.",
       "Do keep the human-control statement beside the proposed decision.",
       "Do preserve the request → coverage → proposal reading order when the layout reflows.",
-      "Do remove smooth scrolling, transforms and transitions when reduced motion is requested.",
       "Do keep tracker scrolling inside its labelled region and expose horizontal-scroll guidance on narrow screens.",
       "Do keep source, locator, original extraction and lifecycle state beside editable evidence.",
-      "Do preserve all semantic roles and visible focus in both light and dark themes."
+      "Do keep ranked queue metadata, finding summary and exact source count together before the review action.",
+      "Do let coverage selection change only the corresponding source or gap explanation.",
+      "Do retain the approved status, raw reply and recorded locator when evaluation or preview fails.",
+      "Do preserve all semantic roles and visible focus in both light and dark themes.",
+      "Do remove smooth scrolling, transforms and transitions when reduced motion is requested."
     ],
     "donts": [
       "Don't split the evidence sequence into a scattered dashboard of interchangeable cards.",
@@ -288,9 +316,11 @@
       "Don't add shadows to static panes or make evidence rows lift on hover.",
       "Don't use condensed display type for source prose, filenames or evidence values.",
       "Don't turn every status or control into a pill.",
-      "Don't introduce gradients, decorative finance imagery or autonomous-AI theatre.",
       "Don't hide unknown owners, missing dates, limited coverage or inactive monitoring; label them explicitly.",
-      "Don't let dialogs, sticky table headers or navigation obscure evidence or keyboard focus."
+      "Don't let dialogs, sticky table headers or navigation obscure evidence or keyboard focus.",
+      "Don't present suggested severity, confidence or proposed status as a human-approved decision.",
+      "Don't document or imply source-inspector tabs or decision controls until those interactions ship.",
+      "Don't introduce gradients, decorative finance imagery or autonomous-AI theatre."
     ]
   }
 }
