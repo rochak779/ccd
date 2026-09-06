@@ -1,7 +1,7 @@
 # CC’d implementation plan
 
 Created: 05 September 2026  
-Status: Ready for implementation; no build session has started.
+Status: S01–S24 implemented and passed locally; outstanding remote checkpoints are recorded per session.
 
 Sources: [Product requirements](CC'd PRD.md) and [Brand guide](brand.md). The PRD owns behaviour and scope; the brand guide owns visual expression. Section references below refer to those documents.
 
@@ -742,4 +742,3 @@ One observable user or system outcome.
 - [ ] The app works from a clean checkout and the actual deployment mode is documented accurately.
 - [ ] Reset, five-minute demo and dependency-failure recovery work from the release commit.
 - [ ] Optional and pilot work remains visible in the ledger, with no unfinished functionality presented as complete.
-

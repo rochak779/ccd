@@ -1,6 +1,7 @@
 "use client";
 
-import { AlertTriangle, Check, ChevronRight, FileSpreadsheet, Mail, Minus, ShieldAlert } from "lucide-react";
+import { AlertTriangle, Check, ChevronRight, FileSpreadsheet, LockKeyhole, Mail, Minus, RefreshCw, ShieldAlert } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ReviewLifecycle } from "./review-lifecycle";
 
@@ -59,6 +60,30 @@ const COVERAGE = [
 ] as const;
 
 type ReviewDecision = "pending" | "partial" | "rejected";
+export type FailureScenario = "parser" | "model" | "interrupted" | "unsupported" | "no-attachment" | "unrelated";
+
+const FAILURE_COPY: Record<FailureScenario, { title: string; detail: string; recovery: string }> = {
+  parser: { title: "Workbook parsing failed", detail: "Customer_Revenue_FY26.xlsx is retained with its filename and received metadata, but no cells can support a tracker update.", recovery: "Use validated prepared extraction" },
+  model: { title: "Evaluation service unavailable", detail: "The received email and workbook remain inspectable. The last approved tracker status is unchanged.", recovery: "Use validated prepared evaluation" },
+  interrupted: { title: "Response processing was interrupted", detail: "The response is safely retained. No proposal or approved tracker value was partially written.", recovery: "Retry processing" },
+  unsupported: { title: "Attachment type is unsupported", detail: "Customer_Revenue_FY26.exe was retained as received but was not opened or evaluated.", recovery: "Review email without attachment" },
+  "no-attachment": { title: "Response contains no attachment", detail: "The message claim is visible, but it cannot support any of the four requested evidence components.", recovery: "Open response for review" },
+  unrelated: { title: "Attachment does not answer C-14", detail: "The file was parsed, then classified as unrelated. It remains inspectable and contributes no supporting evidence.", recovery: "Open response for review" },
+};
+
+export function FailureRecovery({ scenario, onRecovered }: { scenario: FailureScenario; onRecovered: () => void }) {
+  const [recovered, setRecovered] = useState(false);
+  const copy = FAILURE_COPY[scenario];
+  return <aside className="failure-recovery" aria-labelledby="failure-title">
+    <AlertTriangle aria-hidden />
+    <div><h3 id="failure-title">{recovered ? "Recovery ready for review" : copy.title}</h3><p>{recovered ? "A validated fallback restored the proposal path. Review is still required before the tracker can change." : copy.detail}</p><small>Approved tracker · Awaiting response · preserved throughout</small></div>
+    <button type="button" onClick={() => { setRecovered(true); onRecovered(); }} disabled={recovered}><RefreshCw size={16} aria-hidden />{recovered ? "Recovery applied" : copy.recovery}</button>
+  </aside>;
+}
+
+export function AccessDenied() {
+  return <section className="workspace-frame access-denied" aria-labelledby="access-title"><LockKeyhole aria-hidden /><div><h2 id="access-title">You do not have access to this deal</h2><p>This local persona cannot view deal names, requests, sources, findings or activity through this route.</p><Link href="/">Return to your dashboard</Link><small>Prototype limitation: local persona checks demonstrate product behaviour; browser storage is not a production security boundary.</small></div></section>;
+}
 
 export function FindingReview({ onBack, evaluation = "ready", sourceAvailability = "ready", decision, onDecision }: { onBack: () => void; evaluation?: EvaluationAvailability; sourceAvailability?: SourceAvailability; decision: ReviewDecision; onDecision: (decision: ReviewDecision) => void }) {
   const [selectedId, setSelectedId] = useState("C-14.3");
@@ -147,12 +172,12 @@ function WorkbookSource({ availability, surroundingRows, onSurroundingRows }: { 
   return <><SourceMeta kind="Workbook evidence" name="Customer_Revenue_FY26.xlsx · version 1" sourceId={SOURCE_IDS.workbook} locator="Customer Summary!C3" period="FY26" unit="% of revenue" /><span>Surrounding range <code>Customer Summary!A2:C12</code></span>{availability === "warning" ? <aside role="status"><strong>Parse warning</strong><p>Workbook formatting was partially recovered. The cited raw value, displayed value and formula context remain readable.</p></aside> : null}<table aria-label="Workbook surrounding rows"><thead><tr><th>Row</th><th>Customer</th><th>Revenue</th><th>Share</th></tr></thead><tbody>{surroundingRows ? <tr><th scope="row">2</th><td>Customer</td><td>Revenue</td><td>Share</td></tr> : null}<tr className="source-highlight"><th scope="row">3</th><td>Largest Customer Ltd</td><td>£9.3m</td><td>31%</td></tr>{surroundingRows ? <><tr><th scope="row">4</th><td>Customer B</td><td>£4.8m</td><td>16%</td></tr><tr><th scope="row">5</th><td>Customer C</td><td>£3.6m</td><td>12%</td></tr></> : null}</tbody></table><p><strong>Cell C3</strong> · raw value <code>0.31</code> · displayed value <code>31%</code> · formula <code>=B3/$B$13</code></p><button className="context-toggle" type="button" aria-expanded={surroundingRows} onClick={onSurroundingRows}>{surroundingRows ? "Close surrounding rows" : "Open surrounding rows"}</button></>;
 }
 
-export function SampleReviewWorkspace({ evaluation = "ready", sourceAvailability = "ready" }: { evaluation?: EvaluationAvailability; sourceAvailability?: SourceAvailability }) {
+export function SampleReviewWorkspace({ evaluation = "ready", sourceAvailability = "ready", failure }: { evaluation?: EvaluationAvailability; sourceAvailability?: SourceAvailability; failure?: FailureScenario }) {
   const [reviewing, setReviewing] = useState(false);
   const [decision, setDecision] = useState<ReviewDecision>("pending");
   useEffect(() => { const saved = localStorage.getItem("ccd:c14:first-decision") as ReviewDecision | null; if (saved) queueMicrotask(() => setDecision(saved)); }, []);
   function recordDecision(next: ReviewDecision) { setDecision(next); localStorage.setItem("ccd:c14:first-decision", next); }
-  return reviewing ? <><FindingReview onBack={() => setReviewing(false)} evaluation={evaluation} sourceAvailability={sourceAvailability} decision={decision} onDecision={recordDecision} /><section className="lifecycle-mount"><ReviewLifecycle unreadableReplacement={sourceAvailability === "warning"} /></section></> : <DealOverview onReview={() => setReviewing(true)} requests={decision === "partial" ? NORTHSTAR_REQUESTS.map((request) => request.id === "C-14" ? { ...request, approvedStatus: "Partial — evidence missing" as const } : request) : NORTHSTAR_REQUESTS} />;
+  return reviewing ? <><FindingReview onBack={() => setReviewing(false)} evaluation={evaluation} sourceAvailability={sourceAvailability} decision={decision} onDecision={recordDecision} /><section className="lifecycle-mount"><ReviewLifecycle unreadableReplacement={sourceAvailability === "warning"} /></section></> : <>{failure ? <FailureRecovery scenario={failure} onRecovered={() => setReviewing(true)} /> : null}<DealOverview onReview={() => setReviewing(true)} requests={decision === "partial" ? NORTHSTAR_REQUESTS.map((request) => request.id === "C-14" ? { ...request, approvedStatus: "Partial — evidence missing" as const } : request) : NORTHSTAR_REQUESTS} /></>;
 }
 
 export function RequestTracker({ requests = NORTHSTAR_REQUESTS }: { requests?: TrackerRequest[] }) {

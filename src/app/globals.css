@@ -389,6 +389,18 @@ footer span:first-child { color: var(--text); font-family: var(--font-display); 
 .review-queue article > div:nth-child(2) > strong { font-size: 16px; }
 .review-queue article > div:nth-child(2) p { max-width: 68ch; }
 .review-queue button { gap: 8px; }
+.failure-recovery { margin-bottom: 28px; padding: 20px 22px; display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; align-items: start; gap: 14px; color: var(--warning); background: var(--warning-dim); border: 1px solid var(--warning); }
+.failure-recovery h3, .failure-recovery p { margin: 0; }
+.failure-recovery p { margin-top: 4px; color: var(--text-secondary); max-width: 68ch; }
+.failure-recovery small { display: block; margin-top: 8px; color: var(--text-secondary); font-weight: 600; }
+.failure-recovery button { min-height: 48px; padding: 0 16px; display: inline-flex; align-items: center; gap: 8px; color: var(--on-action); background: var(--action); border: 1px solid var(--on-action); border-radius: 8px; font: 600 14px/1.2 var(--font-body); cursor: pointer; }
+.failure-recovery button:disabled { opacity: .65; cursor: not-allowed; }
+.access-denied { min-height: 360px; display: grid; grid-template-columns: 40px minmax(0, 620px); align-content: center; justify-content: center; gap: 18px; }
+.access-denied > svg { color: var(--accent); }
+.access-denied h2 { margin: 0 0 8px; font: 700 clamp(32px, 5vw, 52px)/1 var(--font-display); }
+.access-denied p { color: var(--text-secondary); }
+.access-denied a { display: inline-flex; min-height: 48px; align-items: center; color: var(--accent); font-weight: 700; text-underline-offset: 4px; }
+.access-denied small { display: block; margin-top: 24px; color: var(--text-muted); }
 
 /* S16 review stays one joined evidence record: strong outer structure, fine inner rules. */
 .review-record { margin: calc(clamp(24px, 4vw, 48px) * -1); }
@@ -504,6 +516,9 @@ footer span:first-child { color: var(--text); font-family: var(--font-display); 
   .attention-summary .primary-action-global { width: 100%; }
   .review-queue article { grid-template-columns: 1fr; gap: 16px; }
   .review-queue button { width: 100%; }
+  .failure-recovery { grid-template-columns: 24px 1fr; }
+  .failure-recovery button { grid-column: 1 / -1; width: 100%; justify-content: center; }
+  .access-denied { min-height: 420px; grid-template-columns: 1fr; }
   .review-record { margin: -24px -20px; }
   .review-toolbar { grid-template-columns: 1fr auto; padding: 14px 20px; }
   .review-toolbar > div { grid-column: 1 / -1; grid-row: 2; }
@@ -522,6 +537,11 @@ footer span:first-child { color: var(--text); font-family: var(--font-display); 
   .decision-actions, .secondary-decisions, .decision-form > div { align-items: stretch; flex-direction: column; }
   .decision-controls button { width: 100%; }
   .lifecycle-mount { margin: 24px -20px -24px; }
+}
+
+@media (forced-colors: active) {
+  .failure-recovery, .access-denied, .source-highlight, .coverage-matrix button.selected { border: 2px solid CanvasText; }
+  .failure-recovery button, .primary-action-global { forced-color-adjust: none; background: ButtonFace; color: ButtonText; }
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {
