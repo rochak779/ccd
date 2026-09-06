@@ -11,18 +11,22 @@ test("theme persists and both deliberate landing paths are usable", async ({ pag
   await expect(page.getByText("12 awaiting response")).toBeVisible();
 });
 
-test("local onboarding reaches the deliberate empty dashboard and survives reload", async ({ page }) => {
+test("local onboarding creates a deal inbox and reaches all requests", async ({ page }) => {
   await page.goto("/signup");
   await page.getByLabel("Full name").fill("Priya Shah");
-  await page.getByLabel("Work email").fill("priya@acmecapital.test");
-  await page.getByRole("button", { name: "Create account" }).click();
+  await page.getByLabel("Phone number").fill("+44 7700 900000");
+  await page.getByLabel("Designation").fill("Investment Associate");
+  await page.getByRole("button", { name: /Continue to organisation/ }).click();
   await page.getByLabel("Organisation name").fill("Acme Capital");
-  await page.getByRole("button", { name: "Create organisation" }).click();
+  await page.getByRole("button", { name: /Continue to team/ }).click();
   await page.getByRole("button", { name: "Skip for now" }).click();
-  await page.getByRole("button", { name: /Go to empty dashboard/ }).click();
-  await expect(page.getByRole("heading", { name: "No deals are being tracked yet." })).toBeVisible();
+  await page.getByLabel("Deal name").fill("Project Northstar");
+  await page.getByRole("button", { name: /Create deals and continue/ }).click();
+  await expect(page.getByText("project-northstar@inbound.ccd.app")).toBeVisible();
+  await page.getByRole("button", { name: /Go to all requests/ }).click();
+  await expect(page.getByRole("heading", { name: "All requests" })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole("heading", { name: "No deals are being tracked yet." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Requests across your deals" })).toBeVisible();
 });
 
 test("deal alias, activation, baseline and tracker workflows persist", async ({ page }) => {
