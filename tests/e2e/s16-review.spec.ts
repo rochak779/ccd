@@ -15,17 +15,17 @@ test("ranked overview exception opens a complete read-only C-14 review", async (
   await expect(page.getByText("+9 pp")).toBeVisible();
   await expect(page.getByText("High · suggested")).toBeVisible();
   await expect(page.getByText("97%", { exact: true })).toBeVisible();
-  await expect(page.getByText(/decision controls arrive in a later step/i)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Approve as partial" })).toBeVisible();
 });
 
 test("coverage selection links only supported evidence and explains a missing gap", async ({ page }) => {
   await page.goto("/sample");
   await page.getByRole("button", { name: "Review 3 sources" }).click();
-  await expect(page.getByText("Customer Summary!A2:C12", { exact: true })).toBeVisible();
+  await expect(page.getByRole("tabpanel").getByText("Customer Summary!A2:C12", { exact: true })).toBeVisible();
   await page.getByRole("group", { name: "Request coverage" }).getByRole("button", { name: /Top ten customer contracts/ }).click();
   await expect(page.getByRole("heading", { name: "Top ten customer contracts" })).toBeVisible();
   await expect(page.getByText("No supporting source")).toBeVisible();
-  await expect(page.getByText("Customer Summary!A2:C12", { exact: true })).not.toBeVisible();
+  await expect(page.locator(".source-context").getByText("Customer Summary!A2:C12", { exact: true })).not.toBeVisible();
 });
 
 test("evaluation and source failures retain the approved tracker and raw reply", async ({ page }) => {
@@ -38,5 +38,5 @@ test("evaluation and source failures retain the approved tracker and raw reply",
   await page.goto("/sample?source=unavailable");
   await page.getByRole("button", { name: "Review 3 sources" }).click();
   await expect(page.getByText("Source unavailable")).toBeVisible();
-  await expect(page.getByText(/Customer_Revenue_FY26.xlsx/)).toBeVisible();
+  await expect(page.getByRole("alert").getByText(/Customer_Revenue_FY26.xlsx/)).toBeVisible();
 });
