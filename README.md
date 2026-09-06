@@ -20,7 +20,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Stop the development server with `Ctrl+C`.
 
-Routes: `/` landing, `/signup` local onboarding, `/deals/new` deal setup and `/sample` the synthetic Northstar workspace.
+Routes: `/` landing, `/signup` local onboarding, `/deals/new` deal setup and `/sample` the synthetic Northstar workspace. See [docs/DEMO.md](docs/DEMO.md) for the release walkthrough, reset and recovery scenarios.
 
 ## Verify the session
 

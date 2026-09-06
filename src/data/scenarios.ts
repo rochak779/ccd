@@ -3,6 +3,14 @@ import { CURRENT_SCHEMA_VERSION, emptyWorkspace, workspaceSchema, type Workspace
 
 export const cleanOnboardingScenario = (): Workspace => emptyWorkspace();
 
+/** Product-level visibility for local personas. This demonstrates routing only;
+ * IndexedDB is not a production authorisation boundary. */
+export function visibleDealIds(workspace: Workspace, userId: string): string[] {
+  return workspace.dealAccess
+    .filter((access) => access.userId === userId && access.state === "ACTIVE")
+    .map((access) => access.dealId);
+}
+
 export function populatedSampleScenario(fixture: DemoFixture): Workspace {
   return workspaceSchema.parse({
     schemaVersion: CURRENT_SCHEMA_VERSION, revision: 0,
