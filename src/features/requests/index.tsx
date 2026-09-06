@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertTriangle, Check, ChevronRight, FileSpreadsheet, Mail, Minus, ShieldAlert } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 export type TrackerRequest = {
@@ -9,7 +10,7 @@ export type TrackerRequest = {
 };
 
 export const NORTHSTAR_REQUESTS: TrackerRequest[] = [
-  { id: "C-14", title: "Customer concentration information", owner: "Priya Shah", requestedFrom: "James Carter", coverage: "No response received", approvedStatus: "Awaiting response", proposal: null, due: "2026-09-08", requestedAt: "2026-09-02", components: ["Top ten customer contracts", "Revenue by customer FY25", "Revenue by customer FY26", "Current contract expiry dates"], source: "Northstar_Diligence_Tracker.xlsx · Requests!A15:H15" },
+  { id: "C-14", title: "Customer concentration information", owner: "Priya Shah", requestedFrom: "James Carter", coverage: "1 of 4 supported · 3 missing", approvedStatus: "Awaiting response", proposal: "Partial — evidence missing", due: "2026-09-08", requestedAt: "2026-09-02", components: ["Top ten customer contracts", "Revenue by customer FY25", "Revenue by customer FY26", "Current contract expiry dates"], source: "Northstar_Diligence_Tracker.xlsx · Requests!A15:H15" },
   { id: "F-02", title: "Monthly management accounts", owner: "Priya Shah", requestedFrom: "Finance team", coverage: "No response received", approvedStatus: "Awaiting response", proposal: null, due: "2026-09-07", requestedAt: "2026-08-28", components: ["Monthly P&L", "Balance sheet", "Cash-flow statement"], source: "Northstar_Diligence_Tracker.xlsx · Requests!A3:H3" },
   { id: "F-05", title: "Quality of earnings bridge", owner: "Sam Lee", requestedFrom: "CFO", coverage: "No response received", approvedStatus: "Awaiting response", proposal: null, due: "2026-09-10", requestedAt: "2026-08-29", components: ["Reported EBITDA", "Adjusting items", "Normalised EBITDA"], source: "Northstar_Diligence_Tracker.xlsx · Requests!A6:H6" },
   { id: "C-03", title: "Customer churn cohorts", owner: "Priya Shah", requestedFrom: "Commercial team", coverage: "No response received", approvedStatus: "Awaiting response", proposal: null, due: "2026-09-09", requestedAt: "2026-08-30", components: ["FY24 cohorts", "FY25 cohorts", "FY26 YTD cohorts"], source: "Northstar_Diligence_Tracker.xlsx · Requests!A9:H9" },
@@ -25,7 +26,7 @@ export const NORTHSTAR_REQUESTS: TrackerRequest[] = [
 
 const FILTER_KEY = "ccd:s10:request-filter";
 
-export function DealOverview({ limitedBaseline = false, monitoringActive = true, requests = NORTHSTAR_REQUESTS }: { limitedBaseline?: boolean; monitoringActive?: boolean; requests?: TrackerRequest[] }) {
+export function DealOverview({ limitedBaseline = false, monitoringActive = true, requests = NORTHSTAR_REQUESTS, onReview }: { limitedBaseline?: boolean; monitoringActive?: boolean; requests?: TrackerRequest[]; onReview?: () => void }) {
   const awaiting = requests.filter((request) => request.approvedStatus === "Awaiting response").length;
   const partial = requests.filter((request) => request.approvedStatus === "Partial — evidence missing").length;
   const complete = requests.filter((request) => request.approvedStatus === "Complete").length;
@@ -33,9 +34,68 @@ export function DealOverview({ limitedBaseline = false, monitoringActive = true,
   return <section className="feature-stack"><header><p>Project Northstar</p><h2>Confirmatory diligence</h2></header>
     {limitedBaseline && <aside><strong>Limited baseline coverage</strong><p>Request tracking remains available, but comparisons against earlier documents are limited.</p><a href="#baseline">Add baseline documents</a></aside>}
     {!monitoringActive && <aside><strong>Ongoing monitoring is not active</strong><p>Activate the deal address to track future responses.</p><a href="#deal-setup">Activate deal email</a></aside>}
-    <section><h3>Needs attention</h3>{proposals ? <p>{proposals} decisions require review.</p> : <p>Nothing currently needs review.</p>}</section>
+    <section className="attention-summary"><div><h3>Needs attention</h3>{proposals ? <p>{proposals} exception requires review.</p> : <p>Nothing currently needs review.</p>}</div></section>
+    {proposals && onReview ? <section className="review-queue" aria-label="Ranked review queue"><article><div className="queue-rank"><span>High · suggested</span><small>Potential conflict · Commercial</small></div><div><strong>F-009 · Customer response is incomplete</strong><p>1 of 4 components supplied. Management’s “stable concentration” statement may conflict with the increase from 22% to 31%.</p><small>Needs analyst review · C-14 · 1 email, 1 workbook, 1 previous claim</small></div><button className="primary-action-global" type="button" onClick={onReview}>Review 3 sources<ChevronRight size={17} aria-hidden /></button></article></section> : null}
     <section><h3>Current diligence</h3><p>{awaiting} awaiting response · {partial} partial · {complete} complete</p></section>
   </section>;
+}
+
+type EvaluationAvailability = "ready" | "evaluating" | "unavailable";
+type SourceAvailability = "ready" | "unavailable";
+
+const COVERAGE = [
+  { id: "C-14.1", label: "Top ten customer contracts", claim: "Promised for later delivery", evaluation: "Missing", reason: "No contracts received", source: null },
+  { id: "C-14.2", label: "Revenue by customer FY25", claim: "Not mentioned", evaluation: "Missing", reason: "No FY25 schedule received", source: null },
+  { id: "C-14.3", label: "Revenue by customer FY26", claim: "FY26 schedule attached", evaluation: "Supported", reason: "Customer schedule received and parsed", source: "Customer_Revenue_FY26.xlsx · Customer Summary!A2:C12" },
+  { id: "C-14.4", label: "Current contract expiry dates", claim: "Still being compiled", evaluation: "Missing", reason: "No expiry schedule received", source: null },
+] as const;
+
+export function FindingReview({ onBack, evaluation = "ready", sourceAvailability = "ready" }: { onBack: () => void; evaluation?: EvaluationAvailability; sourceAvailability?: SourceAvailability }) {
+  const [selectedId, setSelectedId] = useState("C-14.3");
+  const selected = COVERAGE.find(({ id }) => id === selectedId)!;
+  const evaluationReady = evaluation === "ready";
+
+  return <article className="review-record" aria-labelledby="finding-title">
+    <header className="review-toolbar"><button type="button" onClick={onBack}>← Overview</button><div><span>Finding F-009</span><h2 id="finding-title">Customer evidence incomplete</h2></div><span className="suggested-severity"><ShieldAlert size={16} aria-hidden />High · suggested</span></header>
+    <div className="review-columns">
+      <section className="review-thread" aria-labelledby="thread-title">
+        <div><span>C-14</span><h2 id="thread-title">Customer concentration</h2></div>
+        <ol className="thread-events">
+          <li><Mail size={17} aria-hidden /><span><strong>2 Sep · Priya requested</strong>4 evidence components</span></li>
+          <li><FileSpreadsheet size={17} aria-hidden /><span><strong>5 Sep · James replied</strong>1 workbook attached</span></li>
+        </ol>
+        <blockquote>“Please see the FY26 schedule. Customer concentration remains stable. Contracts and expiry dates are still being compiled.”</blockquote>
+        <div className="confidence-note"><span>Evaluation confidence</span><strong>{evaluationReady ? "97%" : "Unavailable"}</strong><small>Confidence is system-suggested, not a human decision.</small></div>
+      </section>
+
+      <section className="review-proposal" aria-labelledby="proposal-title">
+        <div className="status-comparison"><div><span>Current approved</span><strong>Awaiting response</strong></div><ChevronRight aria-hidden /><div><span>Proposed</span><strong id="proposal-title">{evaluationReady ? "Partial — evidence missing" : "Evaluation unavailable"}</strong></div></div>
+        {evaluation === "evaluating" ? <aside role="status"><strong>Evaluating response</strong><p>The request, last approved status and received sources remain available while coverage is checked.</p></aside> : null}
+        {evaluation === "unavailable" ? <aside role="alert"><strong>Evaluation unavailable</strong><p>The proposed update cannot be shown. The approved tracker remains unchanged and the raw reply is still readable.</p></aside> : null}
+        {evaluationReady ? <>
+          <div className="coverage-heading"><div><h3>Coverage</h3><p>Requested, claimed and supported are kept separate.</p></div><strong>1 of 4 supported · 3 missing</strong></div>
+          <div className="coverage-matrix" role="group" aria-label="Request coverage">
+            {COVERAGE.map((row) => <button key={row.id} type="button" className={selectedId === row.id ? "selected" : ""} aria-pressed={selectedId === row.id} onClick={() => setSelectedId(row.id)}>
+              <span className={row.evaluation === "Supported" ? "coverage-state supported-state" : "coverage-state missing-state"}>{row.evaluation === "Supported" ? <Check size={15} aria-hidden /> : <Minus size={15} aria-hidden />}{row.evaluation}</span>
+              <strong>{row.label}</strong><small><b>Email claim</b>{row.claim}</small><small><b>Attachment support</b>{row.reason}</small><ChevronRight size={18} aria-hidden />
+            </button>)}
+          </div>
+          <section className="conflict-summary"><div><AlertTriangle size={20} aria-hidden /><div><strong>Potential narrative-to-data conflict</strong><p>“Stable concentration” does not appear consistent with the supplied increase.</p></div></div><dl><div><dt>FY25</dt><dd>22% <small>Confirmed · IC memo p.2</small></dd></div><span aria-hidden>→</span><div><dt>FY26</dt><dd>31% <small>Workbook · Customer Summary C3</small></dd></div><strong>+9 pp</strong></dl></section>
+          <p className="read-only-note">Read-only review · decision controls arrive in a later step.</p>
+        </> : null}
+      </section>
+
+      <section className="source-context" aria-labelledby="source-title">
+        <div><span>Selected component</span><h2 id="source-title">{selected.label}</h2></div>
+        {selected.source && sourceAvailability === "ready" ? <div className="source-preview"><span>Workbook evidence</span><strong>Customer_Revenue_FY26.xlsx</strong><code>Customer Summary!A2:C12</code><table><thead><tr><th>Customer</th><th>Revenue</th><th>Share</th></tr></thead><tbody><tr className="source-highlight"><td>Largest Customer Ltd</td><td>£9.3m</td><td>31%</td></tr><tr><td>Customer B</td><td>£4.8m</td><td>16%</td></tr></tbody></table><p>Supports the FY26 revenue schedule. The 31% observation is located at <code>Customer Summary!C3</code>.</p></div> : selected.source ? <aside role="alert"><strong>Source unavailable</strong><p>The workbook preview cannot be loaded. Its recorded filename and locator are retained: <code>{selected.source}</code>.</p></aside> : <div className="gap-explanation"><Minus size={22} aria-hidden /><strong>No supporting source</strong><p>{selected.reason}. The reply’s wording is shown for context, but it is not evidence that this component was supplied.</p></div>}
+      </section>
+    </div>
+  </article>;
+}
+
+export function SampleReviewWorkspace({ evaluation = "ready", sourceAvailability = "ready" }: { evaluation?: EvaluationAvailability; sourceAvailability?: SourceAvailability }) {
+  const [reviewing, setReviewing] = useState(false);
+  return reviewing ? <FindingReview onBack={() => setReviewing(false)} evaluation={evaluation} sourceAvailability={sourceAvailability} /> : <DealOverview onReview={() => setReviewing(true)} />;
 }
 
 export function RequestTracker({ requests = NORTHSTAR_REQUESTS }: { requests?: TrackerRequest[] }) {

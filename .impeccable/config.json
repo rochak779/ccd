@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-radius",
+        "value": "4px",
+        "createdAt": "2026-09-05T21:48:54.768Z",
+        "reason": "brand.md section 6.3 explicitly assigns 4px to source highlights and code locators"
+      }
+    ]
+  }
+}
