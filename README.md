@@ -1,15 +1,29 @@
-# CC’d
+# CC'd
 
-CC’d turns ordinary diligence email into an evidence-linked tracker proposal while keeping material decisions with a human reviewer. The repository contains the runnable foundation and S02’s typed contracts and synthetic source pack.
+**CC a deal address on the diligence emails your team already sends. CC'd checks the replies and attachments against what was asked for, and proposes a tracker update for a person to approve.**
 
-## Requirements
+[Live demo →](https://ccd-ten.vercel.app) (includes a sample deal to explore)
 
-- Node.js 22
-- npm 10 or later
+![CC'd landing page showing a proposed tracker update with missing evidence flagged](docs/readme/screenshot.png)
 
-## Run locally
+## The problem
 
-From a clean checkout:
+Private equity associates run diligence through ordinary email. They send requests, receive PDFs and spreadsheets back, and then update a separate tracker by hand across several workstreams at once. A reply arriving is easily mistaken for a question being answered. In reality the attachment may cover only part of the request, or contradict an earlier figure, and checking that is slow, manual work that gets skipped under deadline pressure.
+
+## What it does
+
+- **Routes each email to the right deal** through a unique deal address, so nobody has to forward or file anything.
+- **Checks replies and attachments against the specific request,** marking each item as supported, partial or missing.
+- **Flags conflicts,** for example a revenue figure that differs from an earlier source.
+- **Links every piece of evidence to an exact location:** a file, page, sheet or cell range.
+- **Proposes a tracker update for a person to approve.** Material changes always need human sign-off, and every decision is kept in a history.
+
+<details>
+<summary><strong>Tech stack & running locally</strong></summary>
+
+**Stack:** Next.js, TypeScript, Tailwind CSS, Lucide icons. The demo uses a synthetic workspace (Acme Capital / Project Northstar) with prepared inputs and test accounts only.
+
+Requires Node.js 22 and npm 10+.
 
 ```bash
 cp .env.example .env.local
@@ -18,36 +32,10 @@ npx playwright install chromium
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Stop the development server with `Ctrl+C`.
+Open http://localhost:3000. Routes: `/` landing, `/signup` onboarding, `/deals/new` deal setup and `/sample` the synthetic Northstar workspace. See [docs/DEMO.md](docs/DEMO.md) for the walkthrough.
 
-Routes: `/` landing, `/signup` local onboarding, `/deals/new` deal setup and `/sample` the synthetic Northstar workspace. See [docs/DEMO.md](docs/DEMO.md) for the release walkthrough, reset and recovery scenarios.
+Checks: `npm run lint`, `npm run typecheck`, `npm run test:domain`, `npm run build`, `npm run test:e2e`. GitHub Actions runs all of them on every push.
 
-## Verify the session
+Product requirements are in [CC'd PRD.md](CC'd%20PRD.md); engineering decisions are recorded in [docs/DECISIONS.md](docs/DECISIONS.md).
 
-```bash
-npm run lint
-npm run typecheck
-npm run test:domain
-npm run build
-npm run test:e2e
-```
-
-Regenerate the checked-in synthetic sources with `npm run fixtures:generate`; their canonical map is `fixtures/northstar/manifest.json`. Generation is deterministic. The domain suite inspects the real PDF and workbooks and verifies reference failures. The browser suite starts the production server, checks the shell, refresh and keyboard access.
-
-## Production run
-
-```bash
-npm ci
-npm run build
-npm run start
-```
-
-Open [http://localhost:3000](http://localhost:3000) and refresh the page to confirm the production route remains available.
-
-## Environment
-
-Copy `.env.example` to `.env.local`. The example lists names only and contains no credentials. `.env*`, except the example, is ignored by Git. S01 does not require runtime secrets.
-
-## Delivery
-
-GitHub Actions runs installation from the lockfile, linting, type checking, domain tests, the production build and the browser smoke suite. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) and the records in [docs/sessions](docs/sessions).
+</details>
