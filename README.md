@@ -39,3 +39,7 @@ Checks: `npm run lint`, `npm run typecheck`, `npm run test:domain`, `npm run bui
 Product requirements are in [CC'd PRD.md](CC'd%20PRD.md); engineering decisions are recorded in [docs/DECISIONS.md](docs/DECISIONS.md).
 
 </details>
+
+---
+
+Built by [Rochak Agarwal](https://www.rochakagarwal.com). More of my work is at [rochakagarwal.com](https://www.rochakagarwal.com).
